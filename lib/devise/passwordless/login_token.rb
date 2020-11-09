@@ -3,7 +3,7 @@ module Devise::Passwordless
     class InvalidOrExpiredTokenError < StandardError; end
 
     def self.encode(resource)
-      now = Time.zone.now
+      now = Time.current
       len = ActiveSupport::MessageEncryptor.key_len
       salt = SecureRandom.random_bytes(len)
       key = ActiveSupport::KeyGenerator.new(self.secret_key).generate_key(salt, len)
@@ -21,7 +21,7 @@ module Devise::Passwordless
       "#{salt_base64}:#{encrypted_data}"
     end
 
-    def self.decode(token, as_of=Time.current, expire_duration=20.minutes)
+    def self.decode(token, as_of=Time.current, expire_duration=Devise.passwordless_login_within)
       raise InvalidOrExpiredTokenError if token.blank?
       salt_base64, encrypted_data = token.split(":")
       begin

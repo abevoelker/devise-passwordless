@@ -1,39 +1,61 @@
 # Devise::Passwordless
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/devise/passwordless`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A passwordless login strategy for [Devise][]
 
 ## Installation
 
-Add this line to your application's Gemfile:
+You should already have Devise installed. Then add this gem:
 
 ```ruby
-gem 'devise-passwordless'
+gem "devise-passwordless"
 ```
 
-And then execute:
+Then run the generator to automatically update your Devise initializer:
 
-    $ bundle
+```
+rails g devise:passwordless:install
+```
 
-Or install it yourself as:
+Merge these YAML values into your `devise.en.yml` file:
 
-    $ gem install devise-passwordless
+```yaml
+en:
+  devise:
+    failure:
+      passwordless_invalid: "Invalid or expired login link."
+    mailer:
+      passwordless_link:
+        subject: "Here's your magic link"
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+This gem adds an `:email_authenticatable` strategy that can be used in your Devise models for passwordless authentication. This strategy plays well with most other Devise strategies.
 
-## Development
+For example, for a User model, you could do this (other strategies optional and not an exhaustive list):
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+```ruby
+class User < ApplicationRecord
+  devise :email_authenticatable,
+         :registerable,
+         :rememberable,
+         :validatable,
+         :confirmable
+end
+```
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+**Note** if using the `:rememberable` strategy for "remember me" functionality, you'll need to add a `remember_token` column to your resource, as there is no password salt to use for validating cookies:
 
-## Contributing
+```ruby
+change_table :users do |t|
+  t.string :remember_token, limit: 20
+end
+```
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/abevoelker/devise-passwordless.
+**Note** if using the `:confirmable` strategy, you may want to override the default Devise behavior of requiring a fresh login after email confirmation (e.g. [this](https://stackoverflow.com/a/39010334/215168) or [this](https://stackoverflow.com/a/25865526/215168) approach). Otherwise, users will have to get a fresh login link after confirming their email, which makes no sense if they just confirmed they own the email address.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
+[Devise]: https://github.com/heartcombo/devise

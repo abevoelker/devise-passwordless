@@ -5,6 +5,10 @@ module Devise
     module EmailAuthenticatable
       extend ActiveSupport::Concern
 
+      def password_required?
+        false
+      end
+
       # Not having a password method breaks the :validatable module
       def password
         nil

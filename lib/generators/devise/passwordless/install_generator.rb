@@ -23,6 +23,19 @@ module Devise::Passwordless
         end
       end
 
+      def add_mailer_view
+        create_file "app/views/devise/mailer/passwordless_link.html.erb" do <<~'VIEW'
+          <p>Hello <%= @resource.email %>!</p>
+
+          <p>You can login using the link below:</p>
+
+          <p><%= link_to "Log in to my account", passwordless_login_url(Hash[@scope_name, {email: @resource.email, token: @token, remember_me: @remember_me}]) %></p>
+
+          <p>Note that the link will expire in <%= Devise.passwordless_login_within.inspect %>.</p>
+        VIEW
+        end
+      end
+
       def update_devise_yaml
         devise_yaml = "config/locales/devise.en.yml"
         begin
@@ -32,7 +45,7 @@ module Devise::Passwordless
           return
         end
         config["en"]["devise"]["failure"]["passwordless_invalid"] = "Invalid or expired login link."
-        config["en"]["devise"]["mailer"]["passwordless_link"] = {subject: "Your login link"}
+        config["en"]["devise"]["mailer"]["passwordless_link"] = {subject: "Here's your login link"}
         File.open(devise_yaml, "w") do |f|
           f.write(config.to_yaml)
         end

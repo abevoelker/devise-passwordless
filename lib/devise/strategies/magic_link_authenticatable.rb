@@ -6,7 +6,7 @@ require "devise/passwordless/login_token"
 
 module Devise
   module Strategies
-    class EmailAuthenticatable < Authenticatable
+    class MagicLinkAuthenticatable < Authenticatable
       #undef :password
       #undef :password=
       attr_accessor :token
@@ -31,7 +31,7 @@ module Devise
         resource = mapping.to.find_by(id: data["resource"]["key"])
         if validate(resource)
           remember_me(resource)
-          resource.after_passwordless_authentication
+          resource.after_magic_link_authentication
           success!(resource)
         else
           fail!(:passwordless_invalid)
@@ -52,11 +52,11 @@ module Devise
   end
 end
 
-Warden::Strategies.add(:email_authenticatable, Devise::Strategies::EmailAuthenticatable)
+Warden::Strategies.add(:magic_link_authenticatable, Devise::Strategies::MagicLinkAuthenticatable)
 
-Devise.add_module(:email_authenticatable, {
+Devise.add_module(:magic_link_authenticatable, {
   strategy: true,
   controller: :sessions,
   route: :session,
-  model: "devise/models/email_authenticatable",
+  model: "devise/models/magic_link_authenticatable",
 })

@@ -30,13 +30,14 @@ See the [customization section](#customization) for details on what gets install
 
 ## Usage
 
-This gem adds an `:email_authenticatable` strategy that can be used in your Devise models for passwordless authentication. This strategy plays well with most other Devise strategies (see [*notes on other Devise strategies*](#notes-on-other-devise-strategies)).
+This gem adds an `:magic_link_authenticatable` strategy that can be used in your Devise models for passwordless authentication. This strategy plays well with most other Devise strategies (see [*notes on other Devise strategies*](#notes-on-other-devise-strategies)).
 
 For example, for a User model, you could do this (other strategies listed are optional and not exhaustive):
 
 ```ruby
+# app/models/user.rb
 class User < ApplicationRecord
-  devise :email_authenticatable,
+  devise :magic_link_authenticatable,
          :registerable,
          :rememberable,
          :validatable,
@@ -84,7 +85,7 @@ And these should be edited to remove password references:
 Configuration options are stored in Devise's initializer at `config/initializers/devise.rb`:
 
 ```ruby
-# ==> Configuration for :email_authenticatable
+# ==> Configuration for :magic_link_authenticatable
 
 # Need to use a custom Devise mailer in order to send magic links
 config.mailer = "PasswordlessMailer"

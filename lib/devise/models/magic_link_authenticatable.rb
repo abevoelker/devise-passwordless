@@ -1,8 +1,8 @@
-require 'devise/strategies/email_authenticatable'
+require 'devise/strategies/magic_link_authenticatable'
 
 module Devise
   module Models
-    module EmailAuthenticatable
+    module MagicLinkAuthenticatable
       extend ActiveSupport::Concern
 
       def password_required?
@@ -25,21 +25,21 @@ module Devise
       #
       # Example:
       #
-      #   def after_passwordless_authentication
+      #   def after_magic_link_authentication
       #     self.update_attribute(:invite_code, nil)
       #   end
       #
-      def after_passwordless_authentication
+      def after_magic_link_authentication
       end
 
       protected
 
       module ClassMethods
         # We assume this method already gets the sanitized values from the
-        # EmailAuthenticatable strategy. If you are using this method on
+        # MagicLinkAuthenticatable strategy. If you are using this method on
         # your own, be sure to sanitize the conditions hash to only include
         # the proper fields.
-        def find_for_email_authentication(conditions)
+        def find_for_magic_link_authentication(conditions)
           find_for_authentication(conditions)
         end
 

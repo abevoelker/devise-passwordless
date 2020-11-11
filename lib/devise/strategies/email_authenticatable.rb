@@ -57,6 +57,6 @@ Warden::Strategies.add(:email_authenticatable, Devise::Strategies::EmailAuthenti
 Devise.add_module(:email_authenticatable, {
   strategy: true,
   controller: :sessions,
+  route: :session,
   model: "devise/models/email_authenticatable",
-  route: :session
 })

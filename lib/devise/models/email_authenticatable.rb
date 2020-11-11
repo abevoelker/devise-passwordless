@@ -14,6 +14,11 @@ module Devise
         nil
       end
 
+      def send_magic_link(remember_me)
+        token = Devise::Passwordless::LoginToken.encode(self)
+        send_devise_notification(:magic_link, token, remember_me, {})
+      end
+
       # A callback initiated after successfully authenticating. This can be
       # used to insert your own logic that is only run after the user successfully
       # authenticates.

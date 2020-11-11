@@ -62,6 +62,23 @@ Rails.application.routes.draw do
 end
 ```
 
+Finally, you'll want to update Devise's generated views to remove references to passwords.
+
+These files/directories can be deleted entirely:
+
+* `app/views/devise/passwords`
+* `app/views/devise/mailer/password_change.html.erb`
+* `app/views/devise/mailer/reset_password_instructions.html.erb`
+
+And these should be edited to remove password references:
+
+* `app/views/devise/registrations/new.html.erb`
+  * Delete fields `:password` and `:password_confirmation`
+* `app/views/devise/registrations/edit.html.erb`
+  * Delete fields `:password`, `:password_confirmation`, `:current_password`
+* `app/views/devise/sessions/new.html.erb`
+  * Delete field `:password`
+
 ## Customization
 
 Configuration options are stored in Devise's initializer at `config/initializers/devise.rb`:

@@ -51,7 +51,7 @@ Then, you'll need to generate two controllers to modify Devise's default session
 $ rails g devise:passwordless:controller User
 ```
 
-Then, modify your routes file like so to use these controllers:
+Then, set up your Devise routes like so to use these controllers:
 
 ```ruby
 # config/routes.rb
@@ -63,13 +63,15 @@ Rails.application.routes.draw do
 end
 ```
 
-Finally, you'll want to update Devise's generated views to remove references to passwords.
+Finally, you'll want to update Devise's generated views to remove references to passwords, since you don't need them any more!
 
 These files/directories can be deleted entirely:
 
-* `app/views/devise/passwords`
-* `app/views/devise/mailer/password_change.html.erb`
-* `app/views/devise/mailer/reset_password_instructions.html.erb`
+```
+app/views/devise/passwords
+app/views/devise/mailer/password_change.html.erb
+app/views/devise/mailer/reset_password_instructions.html.erb
+```
 
 And these should be edited to remove password references:
 

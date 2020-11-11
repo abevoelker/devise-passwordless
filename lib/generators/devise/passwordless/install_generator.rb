@@ -2,9 +2,9 @@ require "rails/generators"
 require "yaml"
 
 module Devise::Passwordless
-  module Generators
-    class InstallGenerator < ::Rails::Generators::Base
-      desc "Updates the Devise initializer to add passwordless config options"
+  module Generators # :nodoc:
+    class InstallGenerator < ::Rails::Generators::Base # :nodoc:
+      desc "Creates default install and config files for the Devise passwordless auth strategy"
 
       def update_devise_initializer
         inject_into_file 'config/initializers/devise.rb', before: /^end$/ do <<~'CONFIG'.indent(2)

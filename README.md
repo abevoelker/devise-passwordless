@@ -44,7 +44,13 @@ class User < ApplicationRecord
 end
 ```
 
-You'll need to add two routes to accommodate generating emailed login links, and then consuming the links:
+Then, you'll need to generate two controllers to modify Devise's default session create logic and to handle processing magic links:
+
+```
+$ rails g devise:passwordless:controller User
+```
+
+Then, modify your routes file like so to use these controllers:
 
 ```ruby
 # config/routes.rb

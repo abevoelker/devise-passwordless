@@ -22,6 +22,11 @@ module Devise::Passwordless
           # key will render invalid all existing passwordless login tokens. You can
           # generate your own secret value with e.g. `rake secret`
           # config.passwordless_secret_key = nil
+
+          # When using the :trackable module, set to true to consider magic link tokens
+          # generated before the user's current sign in time to be expired. In other words,
+          # each time you sign in, all existing magic links will be considered invalid.
+          # config.passwordless_expire_old_tokens_on_sign_in = false
         CONFIG
         end
       end
@@ -68,7 +73,7 @@ module Devise::Passwordless
                 magic_link_sent: "A login link has been sent to your email address. Please follow the link to log in to your account.",
               },
               failure: {
-                passwordless_invalid: "Invalid or expired login link.",
+                magic_link_invalid: "Invalid or expired login link.",
               },
               mailer: {
                 magic_link: {

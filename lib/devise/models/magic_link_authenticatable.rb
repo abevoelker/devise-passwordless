@@ -43,7 +43,11 @@ module Devise
           find_for_authentication(conditions)
         end
 
-        Devise::Models.config(self, :passwordless_login_within, :passwordless_secret_key)
+        Devise::Models.config(self,
+          :passwordless_login_within,
+          :passwordless_secret_key,
+          :passwordless_expire_old_tokens_on_sign_in
+        )
       end
     end
   end
@@ -55,4 +59,7 @@ module Devise
 
   mattr_accessor :passwordless_secret_key
   @@passwordless_secret_key = nil
+
+  mattr_accessor :passwordless_expire_old_tokens_on_sign_in
+  @@passwordless_expire_old_tokens_on_sign_in = false
 end

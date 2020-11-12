@@ -13,7 +13,8 @@ module Devise::Passwordless
           # ==> Configuration for :magic_link_authenticatable
 
           # Need to use a custom Devise mailer in order to send magic links
-          config.mailer = "PasswordlessMailer"
+          require "devise/passwordless/mailer"
+          config.mailer = "Devise::Passwordless::Mailer"
 
           # Time period after a magic login link is sent out that it will be valid for.
           # config.passwordless_login_within = 20.minutes
@@ -29,19 +30,6 @@ module Devise::Passwordless
           # each time you sign in, all existing magic links will be considered invalid.
           # config.passwordless_expire_old_tokens_on_sign_in = false
         CONFIG
-        end
-      end
-
-      def add_custom_devise_mailer
-        create_file "app/mailers/passwordless_mailer.rb" do <<~'FILE'
-        class PasswordlessMailer < Devise::Mailer
-          def magic_link(record, token, remember_me, opts = {})
-            @token = token
-            @remember_me = remember_me
-            devise_mail(record, :magic_link, opts)
-          end
-        end
-        FILE
         end
       end
 

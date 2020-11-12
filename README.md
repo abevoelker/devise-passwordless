@@ -2,7 +2,11 @@
 
 A passwordless a.k.a. "magic link" login strategy for [Devise][]
 
-No database migrations are needed as login links are stateless encrypted tokens generated with Rails's MessageEncryptor.
+## Features
+
+* No database migrations / state needed - links are stateless encrypted tokens thanks to Rails's MessageEncryptor
+* Magic links are sent from your app - not a mounted Rails engine - so path and URL helpers work as expected
+* All the goodness of Devise!
 
 ## Installation
 
@@ -32,7 +36,7 @@ See the [customization section](#customization) for details on what gets install
 
 This gem adds a `:magic_link_authenticatable` strategy that can be used in your Devise models for passwordless authentication. This strategy plays well with most other Devise strategies (see [*notes on other Devise strategies*](#notes-on-other-devise-strategies)).
 
-For example, for a User model, you could do this (other strategies listed are optional and not exhaustive):
+For example, for a User model, you can now do this (other strategies listed are optional and not exhaustive):
 
 ```ruby
 # app/models/user.rb
@@ -126,7 +130,7 @@ To customize the magic link email body, edit `app/views/devise/mailer/magic_link
 
 ### Notes on other Devise strategies
 
-If using the `:rememberable` strategy for "remember me" functionality, you'll need to add a `remember_token` column to your resource, as by default it assumes you're using a password strategy and relies on comparing the password's salt to validate cookies:
+If using the `:rememberable` strategy for "remember me" functionality, you'll need to add a `remember_token` column to your resource, as by default that strategy assumes you're using a password auth strategy and relies on comparing the password's salt to validate cookies:
 
 ```ruby
 change_table :users do |t|

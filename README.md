@@ -119,7 +119,7 @@ en:
       magic_link_invalid: "Invalid or expired login link."
     mailer:
       magic_link:
-        subject: "Here's your magic login link 🪄✨"
+        subject: "Here's your magic login link ✨"
 ```
 
 To customize the magic link email body, edit `app/views/devise/mailer/magic_link.html.erb`

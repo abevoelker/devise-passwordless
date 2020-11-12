@@ -1,3 +1,4 @@
+require "psych"
 require "rails/generators"
 require "yaml"
 
@@ -65,7 +66,7 @@ module Devise::Passwordless
           STDERR.puts "Couldn't find #{devise_yaml} - skipping patch"
           return
         end
-        config.deep_merge!({
+        default_config = {
           en: {
             devise: {
               passwordless: {
@@ -77,13 +78,41 @@ module Devise::Passwordless
               },
               mailer: {
                 magic_link: {
-                  subject: "Here's your login link 🪄✨",
+                  subject: "Here's your magic login link ✨",
                 },
               }
             }
           }
-        })
-        File.open(devise_yaml, "w"){ |f| f.write(config.to_yaml) }
+        }
+        merged_config = config.deep_merge(default_config.deep_stringify_keys)
+        File.open(devise_yaml, "w") do |f|
+          f.write(force_double_quote_yaml(merged_config.to_yaml))
+        end
+      end
+
+      private
+
+      # https://github.com/ruby/psych/issues/322#issuecomment-328408276
+      def force_double_quote_yaml(yaml_str)
+        ast = Psych.parse_stream(yaml_str)
+
+        # First pass, quote everything
+        ast.grep(Psych::Nodes::Scalar).each do |node|
+          node.plain  = false
+          node.quoted = true
+          node.style  = Psych::Nodes::Scalar::DOUBLE_QUOTED
+        end
+
+        # Second pass, unquote keys
+        ast.grep(Psych::Nodes::Mapping).each do |node|
+          node.children.each_slice(2) do |k, _|
+            k.plain  = true
+            k.quoted = false
+            k.style  = Psych::Nodes::Scalar::ANY
+          end
+        end
+
+        ast.yaml(nil, {line_width: -1})
       end
     end
   end

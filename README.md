@@ -37,16 +37,12 @@ See the [customization section](#customization) for details on what gets install
 
 This gem adds a `:magic_link_authenticatable` strategy that can be used in your Devise models for passwordless authentication. This strategy plays well with most other Devise strategies (see [*notes on other Devise strategies*](#notes-on-other-devise-strategies)).
 
-For example, given a User model, you can now do this (other strategies listed are optional and not exhaustive):
+For example, if your Devise model is User, enable the strategy like this:
 
 ```ruby
 # app/models/user.rb
 class User < ApplicationRecord
-  devise :magic_link_authenticatable,
-         :registerable,
-         :rememberable,
-         :validatable,
-         :confirmable
+  devise :magic_link_authenticatable #, :registerable, :rememberable, ...
 end
 ```
 
@@ -203,6 +199,13 @@ end
 ```
 
 If using the `:confirmable` strategy, you may want to override the default Devise behavior of requiring a fresh login after email confirmation (e.g. [this](https://stackoverflow.com/a/39010334/215168) or [this](https://stackoverflow.com/a/25865526/215168) approach). Otherwise, users will have to get a fresh login link after confirming their email, which makes little sense if they just confirmed they own the email address.
+
+## Alternatives
+
+Other Ruby libraries that offer passwordless authentication:
+
+* [passwordless](https://github.com/mikker/passwordless)
+* [magic-link](https://github.com/dvanderbeek/magic-link)
 
 ## License
 

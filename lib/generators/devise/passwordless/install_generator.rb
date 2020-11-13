@@ -60,10 +60,13 @@ module Devise::Passwordless
 
       def update_devise_yaml
         devise_yaml = "config/locales/devise.en.yml"
+        existing_config = {}
         begin
-          config = YAML.load_file(devise_yaml)
+          in_root do
+            existing_config = YAML.load_file(devise_yaml)
+          end
         rescue Errno::ENOENT
-          STDERR.puts "Couldn't find #{devise_yaml} - skipping patch"
+          say_status :skip, devise_yaml, :yellow
           return
         end
         default_config = {
@@ -84,9 +87,16 @@ module Devise::Passwordless
             }
           }
         }
-        merged_config = config.deep_merge(default_config.deep_stringify_keys)
-        File.open(devise_yaml, "w") do |f|
-          f.write(force_double_quote_yaml(merged_config.to_yaml))
+        merged_config = existing_config.deep_merge(default_config.deep_stringify_keys)
+        if existing_config.to_yaml == merged_config.to_yaml
+          say_status :identical, devise_yaml, :blue
+        else
+          in_root do
+            File.open(devise_yaml, "w") do |f|
+              f.write(force_double_quote_yaml(merged_config.to_yaml))
+            end
+          end
+          say_status :insert, devise_yaml, :green
         end
       end
 

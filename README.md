@@ -163,6 +163,7 @@ Rails.application.routes.draw do
     get "/admins/magic_link",
       to: "devise/passwordless/magic_links#show",
       as: "admins_magic_link"
+  end
 end
 ```
 

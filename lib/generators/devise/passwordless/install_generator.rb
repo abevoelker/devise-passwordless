@@ -5,7 +5,19 @@ require "yaml"
 module Devise::Passwordless
   module Generators # :nodoc:
     class InstallGenerator < ::Rails::Generators::Base # :nodoc:
-      desc "Creates default install and config files for the Devise passwordless auth strategy"
+      desc "Creates default install and config files for the Devise :magic_link_authenticatable strategy"
+
+      def self.default_generator_root
+        File.dirname(__FILE__)
+      end
+
+      def create_sessions_controller
+        template "sessions_controller.rb.erb", "app/controllers/devise/passwordless/sessions_controller.rb"
+      end
+
+      def create_magic_links_controller
+        template "magic_links_controller.rb.erb", "app/controllers/devise/passwordless/magic_links_controller.rb"
+      end
 
       def update_devise_initializer
         inject_into_file 'config/initializers/devise.rb', before: /^end$/ do <<~'CONFIG'.indent(2)
@@ -39,7 +51,7 @@ module Devise::Passwordless
 
           <p>You can login using the link below:</p>
           
-          <p><%= link_to "Log in to my account", send("#{@scope_name.to_s.pluralize}_magic_links_url", Hash[@scope_name, {email: @resource.email, token: @token, remember_me: @remember_me}]) %></p>
+          <p><%= link_to "Log in to my account", send("#{@scope_name.to_s.pluralize}_magic_link_url", Hash[@scope_name, {email: @resource.email, token: @token, remember_me: @remember_me}]) %></p>
           
           <p>Note that the link will expire in <%= Devise.passwordless_login_within.inspect %>.</p>          
         FILE

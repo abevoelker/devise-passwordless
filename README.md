@@ -36,7 +36,7 @@ See the [customization section](#customization) for details on what gets install
 
 This gem adds a `:magic_link_authenticatable` strategy that can be used in your Devise models for passwordless authentication. This strategy plays well with most other Devise strategies (see [*notes on other Devise strategies*](#notes-on-other-devise-strategies)).
 
-For example, for a User model, you can now do this (other strategies listed are optional and not exhaustive):
+For example, given a User model, you can now do this (other strategies listed are optional and not exhaustive):
 
 ```ruby
 # app/models/user.rb
@@ -49,20 +49,17 @@ class User < ApplicationRecord
 end
 ```
 
-Then, you'll need to generate two controllers to modify Devise's default session create logic and to handle processing magic links:
-
-```
-$ rails g devise:passwordless:controller User
-```
-
-Then, set up your Devise routes like so to use these controllers:
+Then, you'll need to set up your Devise routes like so to use the passwordless controllers to modify Devise's default session create logic and to handle processing magic links:
 
 ```ruby
 # config/routes.rb
 Rails.application.routes.draw do
-  devise_for :users, controllers: { sessions: "users/sessions" }
+  devise_for :users,
+    controllers: { sessions: "devise/passwordless/sessions" }
   devise_scope :user do
-    get "/users/magic_links" => "users/magic_links#show"
+    get "/users/magic_link",
+      to: "devise/passwordless/magic_links#show",
+      as: "users_magic_link"
   end
 end
 ```

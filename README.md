@@ -4,8 +4,9 @@ A passwordless a.k.a. "magic link" login strategy for [Devise][]
 
 ## Features
 
-* No database migrations / state needed - links are stateless encrypted tokens thanks to Rails's MessageEncryptor
+* No special database migrations needed - magic links are stateless encrypted tokens
 * Magic links are sent from your app - not a mounted Rails engine - so path and URL helpers work as expected
+* [Supports multiple user (resource) types](#multiple-user-resource-types)
 * All the goodness of Devise!
 
 ## Installation
@@ -126,6 +127,70 @@ en:
 
 To customize the magic link email body, edit `app/views/devise/mailer/magic_link.html.erb`
 
+### Multiple user (resource) types
+
+Devise supports multiple resource types, so we do too.
+
+For example, if you have a User and Admin model, enable the `:magic_link_authenticatable` strategy for each:
+
+```ruby
+# app/models/user.rb
+class User < ApplicationRecord
+  devise :magic_link_authenticatable # , :registerable, :rememberable, ...
+end
+
+# app/models/admin.rb
+class Admin < ApplicationRecord
+  devise :magic_link_authenticatable # , :registerable, :rememberable, ...
+end
+```
+
+Then just set up your routes like this:
+
+```ruby
+# config/routes.rb
+Rails.application.routes.draw do
+  devise_for :users,
+    controllers: { sessions: "devise/passwordless/sessions" }
+  devise_scope :user do
+    get "/users/magic_link",
+      to: "devise/passwordless/magic_links#show",
+      as: "users_magic_link"
+  end
+  devise_for :admins,
+    controllers: { sessions: "devise/passwordless/sessions" }
+  devise_scope :admin do
+    get "/admins/magic_link",
+      to: "devise/passwordless/magic_links#show",
+      as: "admins_magic_link"
+end
+```
+
+And that's it!
+
+Messaging can be customized per-resource using [Devise's usual I18n support][devise-i18n]:
+
+```yaml
+en:
+  devise:
+    passwordless:
+      user:
+        not_found_in_database: "Could not find a USER for that email address"
+        magic_link_sent: "A USER login link has been sent to your email address. Please follow the link to log in to your account."
+      admin:
+        not_found_in_database: "Could not find an ADMIN for that email address"
+        magic_link_sent: "An ADMIN login link has been sent to your email address. Please follow the link to log in to your account."
+    failure:
+      user:
+        magic_link_invalid: "Invalid or expired USER login link."
+      admin:
+        magic_link_invalid: "Invalid or expired ADMIN login link."
+    mailer:
+      magic_link:
+        user_subject: "Here's your USER magic login link ✨"
+        admin_subject: "Here's your ADMIN magic login link ✨"
+```
+
 ### Notes on other Devise strategies
 
 If using the `:rememberable` strategy for "remember me" functionality, you'll need to add a `remember_token` column to your resource, as by default that strategy assumes you're using a password auth strategy and relies on comparing the password's salt to validate cookies:
@@ -143,3 +208,4 @@ If using the `:confirmable` strategy, you may want to override the default Devis
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
 [Devise]: https://github.com/heartcombo/devise
+[devise-i18n]: https://github.com/heartcombo/devise#i18n

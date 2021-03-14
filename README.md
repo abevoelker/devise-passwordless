@@ -80,6 +80,15 @@ And these should be edited to remove password references:
 * `app/views/devise/sessions/new.html.erb`
   * Delete field `:password`
 
+#### Manually sending magic links
+
+You can very easily send a magic link at any point like so:
+
+```ruby
+remember_me = true
+User.send_magic_link(remember_me)
+```
+
 ## Customization
 
 Configuration options are stored in Devise's initializer at `config/initializers/devise.rb`:
@@ -186,6 +195,24 @@ en:
       magic_link:
         user_subject: "Here's your USER magic login link ✨"
         admin_subject: "Here's your ADMIN magic login link ✨"
+```
+
+#### Scoped views
+
+If you have multiple Devise models, some that are passwordless and some that aren't, you will probably want to enable [Devise's `scoped_views` setting](https://henrytabima.github.io/rails-setup/docs/devise/configuring-views) so that the models have different signup and login pages (since some models will need password fields and others won't).
+
+If you need to generate fresh Devise views for your models, you can do so like so:
+
+```
+$ rails generate devise:views users
+$ rails generate devise:views admins
+```
+
+Which will generate the whole set of Devise views under these paths:
+
+```
+app/views/users/
+app/views/admins/
 ```
 
 ### Notes on other Devise strategies

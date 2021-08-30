@@ -21,7 +21,7 @@ module Devise
 
       def authenticate!
         begin
-          data = Devise::Passwordless::LoginToken.decode(self.token)
+          data = decode_passwordless_token
         rescue Devise::Passwordless::LoginToken::InvalidOrExpiredTokenError
           fail!(:magic_link_invalid)
           return
@@ -49,6 +49,10 @@ module Devise
       end
 
       private
+
+      def decode_passwordless_token
+        Devise::Passwordless::LoginToken.decode(self.token)
+      end
 
       # Sets the authentication hash and the token from params_auth_hash or http_auth_hash.
       def with_authentication_hash(auth_type, auth_values)

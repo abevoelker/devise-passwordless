@@ -24,4 +24,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # App gems begin here
 gem "devise"
-gem "devise-passwordless", :path => "../.."
+gem "devise-passwordless", :path => "../../../"

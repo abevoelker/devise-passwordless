@@ -8,6 +8,9 @@
 /spec/tmp
 /tmp/
 Gemfile.lock
+Gemfile*.lock
 
 # rspec failure tracking
 .rspec_status
+
+.ruby-version

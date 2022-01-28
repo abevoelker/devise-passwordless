@@ -19,6 +19,12 @@ jobs:
         gemfile:
           - gemfiles/Gemfile-rails-7
           - gemfiles/Gemfile-rails-6.0
+        exclude:
+          # Rails 7 requires Ruby 2.7+
+          - ruby-version: 2.5
+            gemfile: gemfiles/Gemfile-rails-7
+          - ruby-version: 2.6
+            gemfile: gemfiles/Gemfile-rails-7
     steps:
       - uses: actions/checkout@v2
       - name: Set up Ruby ${{ matrix.ruby-version }}

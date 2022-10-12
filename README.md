@@ -86,7 +86,7 @@ You can very easily send a magic link at any point like so:
 
 ```ruby
 remember_me = true
-User.send_magic_link(remember_me)
+User.last.send_magic_link(remember_me)
 ```
 
 ## Customization

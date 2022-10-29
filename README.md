@@ -132,6 +132,8 @@ en:
 
 To customize the magic link email body, edit `app/views/devise/mailer/magic_link.html.erb`
 
+To customise email headers (including the email subject as well as more unusual headers like `X-Entity-Ref-ID`) pass them in a hash to `resource.send_magic_link` in `SessionsController`, eg. `resource.send_magic_link(create_params[:remember_me], subject: "Your login link has arrived!")`.
+
 ### Multiple user (resource) types
 
 Devise supports multiple resource types, so we do too.

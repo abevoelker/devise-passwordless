@@ -2,7 +2,7 @@ module Devise::Passwordless
   class LoginToken
     class InvalidOrExpiredTokenError < StandardError; end
 
-    def self.encode(resource)
+    def self.encode(resource, **opts)
       now = Time.current
       len = ActiveSupport::MessageEncryptor.key_len
       salt = SecureRandom.random_bytes(len)
@@ -16,6 +16,7 @@ module Devise::Passwordless
           },
         },
         created_at: now.to_f,
+        **opts,
       })
       salt_base64 = Base64.strict_encode64(salt)
       "#{salt_base64}:#{encrypted_data}"
@@ -38,9 +39,16 @@ module Devise::Passwordless
         raise InvalidOrExpiredTokenError
       end
 
-      created_at = ActiveSupport::TimeZone["UTC"].at(decrypted_data["created_at"])
-      if as_of.to_f > (created_at + expire_duration).to_f
-        raise InvalidOrExpiredTokenError
+      if decrypted_data["expire_at"].present?
+        expire_at = ActiveSupport::TimeZone["UTC"].at(decrypted_data["expire_at"])
+        if as_of.to_f > expire_at.to_f
+          raise InvalidOrExpiredTokenError
+        end
+      else
+        created_at = ActiveSupport::TimeZone["UTC"].at(decrypted_data["created_at"])
+        if as_of.to_f > (created_at + expire_duration).to_f
+          raise InvalidOrExpiredTokenError
+        end
       end
 
       decrypted_data

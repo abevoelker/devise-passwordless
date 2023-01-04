@@ -89,6 +89,26 @@ remember_me = true
 User.last.send_magic_link(remember_me)
 ```
 
+#### Generate links with custom expiration time
+
+You can generate magic link with a custom expiration time like so:
+
+```ruby
+expiration_time = 2.days.from_now # Or what ever your need
+token = Devise::Passwordless::LoginToken.encode(user, expires_at: expiration_time)
+remember_me = true # Or `false`, as per your need
+
+users_magic_link_url(
+  user: {
+    email: user.email,
+    token: token,
+    remember_me: remember_me
+  }
+)
+```
+
+This only generates the magic link. You will have to send an email manually.
+
 ## Customization
 
 Configuration options are stored in Devise's initializer at `config/initializers/devise.rb`:

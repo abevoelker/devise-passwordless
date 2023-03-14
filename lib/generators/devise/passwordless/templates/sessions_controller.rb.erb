@@ -6,13 +6,13 @@ class Devise::Passwordless::SessionsController < Devise::SessionsController
     self.resource = resource_class.find_by(email: create_params[:email])
     if self.resource
       resource.send_magic_link(create_params[:remember_me])
-      set_flash_message(:notice, :magic_link_sent, now: true)
+      set_flash_message(:notice, :magic_link_sent)
+      redirect_to(action: :new, status: redirect_status)
     else
-      set_flash_message(:alert, :not_found_in_database, now: true)
+      set_flash_message(:alert, :not_found_in_database)
+      self.resource = resource_class.new(create_params)
+      render :new, status: error_status
     end
-
-    self.resource = resource_class.new(create_params)
-    render :new
   end
 
   protected
@@ -29,6 +29,14 @@ class Devise::Passwordless::SessionsController < Devise::SessionsController
 
   def create_params
     resource_params.permit(:email, :remember_me)
+  end
+                                                                           
+  def redirect_status
+    Devise.respond_to?(:responder) ? Devise.responder.redirect_status : :found
+  end
+                                                                           
+  def error_status
+    Devise.respond_to?(:responder) ? Devise.responder.error_status : :ok
   end
 end
 <% end -%>

@@ -42,6 +42,7 @@ module Devise
         if validate(resource)
           remember_me(resource)
           resource.after_magic_link_authentication
+          env['warden.magic_link_extra'] = data['data'].delete('extra')
           success!(resource)
         else
           fail!(:magic_link_invalid)

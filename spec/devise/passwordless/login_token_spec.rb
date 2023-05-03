@@ -31,5 +31,26 @@ RSpec.describe Devise::Passwordless::LoginToken do
 
       expect(decrypted).to eq(expected_decrypt)
     end
+
+    it 'can encrypt and decrpt a resource with extra data supplied', freeze_time: Time.new(2023, 1, 1) do
+      token = described_class.encode(user, { foo: :bar })
+      decrypted = described_class.decode(token)
+
+      expected_decrypt =
+        {
+          "created_at" => 1672531200.0,
+          "data" => {
+            "resource" => {
+              "email" => "email@example.com",
+              "key" => 12345
+            },
+            "extra" => {
+              "foo" => "bar"
+            },
+          }
+        }
+
+      expect(decrypted).to eq(expected_decrypt)
+    end
   end
 end

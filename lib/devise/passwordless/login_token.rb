@@ -2,13 +2,13 @@ module Devise::Passwordless
   class LoginToken
     class InvalidOrExpiredTokenError < StandardError; end
 
-    def self.encode(resource)
+    def self.encode(resource, extra=nil)
       now = Time.current
       len = ActiveSupport::MessageEncryptor.key_len
       salt = SecureRandom.random_bytes(len)
       key = ActiveSupport::KeyGenerator.new(self.secret_key).generate_key(salt, len)
       crypt = ActiveSupport::MessageEncryptor.new(key, serializer: JSON)
-      encrypted_data = crypt.encrypt_and_sign({
+      data = {
         data: {
           resource: {
             key: resource.to_key,
@@ -16,7 +16,9 @@ module Devise::Passwordless
           },
         },
         created_at: now.to_f,
-      })
+      }
+      data[:data][:extra] = extra if extra
+      encrypted_data = crypt.encrypt_and_sign(data)
       salt_base64 = Base64.strict_encode64(salt)
       "#{salt_base64}:#{encrypted_data}"
     end

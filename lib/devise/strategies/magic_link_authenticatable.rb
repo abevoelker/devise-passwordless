@@ -42,6 +42,7 @@ module Devise
         if validate(resource)
           remember_me(resource)
           resource.after_magic_link_authentication
+          set_return_to_path(data["path"])
           success!(resource)
         else
           fail!(:magic_link_invalid)
@@ -61,6 +62,10 @@ module Devise
 
         parse_authentication_key_values(auth_values, authentication_keys) &&
         parse_authentication_key_values(request_values, request_keys)
+      end
+
+      def set_return_to_path(path)
+        path.present? && session["#{scope}_return_to"] = path
       end
     end
   end

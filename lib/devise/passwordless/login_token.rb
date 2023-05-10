@@ -2,7 +2,7 @@ module Devise::Passwordless
   class LoginToken
     class InvalidOrExpiredTokenError < StandardError; end
 
-    def self.encode(resource, opts = {})
+    def self.encode(resource)
       now = Time.current
       len = ActiveSupport::MessageEncryptor.key_len
       salt = SecureRandom.random_bytes(len)
@@ -14,7 +14,6 @@ module Devise::Passwordless
             key: resource.to_key,
             email: resource.email,
           },
-          path: opts[:path],
         },
         created_at: now.to_f,
       })

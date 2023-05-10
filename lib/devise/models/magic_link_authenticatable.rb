@@ -15,7 +15,7 @@ module Devise
       end
 
       def send_magic_link(remember_me, opts = {})
-        token = Devise::Passwordless::LoginToken.encode(self, path: opts[:path])
+        token = Devise::Passwordless::LoginToken.encode(self)
         send_devise_notification(:magic_link, token, remember_me, opts)
       end
 
@@ -29,7 +29,7 @@ module Devise
       #     self.update_attribute(:invite_code, nil)
       #   end
       #
-      def after_magic_link_authentication(_token_data)
+      def after_magic_link_authentication
       end
 
       protected

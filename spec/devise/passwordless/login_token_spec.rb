@@ -14,7 +14,7 @@ RSpec.describe Devise::Passwordless::LoginToken do
       Timecop.return
     end
 
-    it 'can encrypt and decrypt a resource', freeze_time: Time.new(2023, 1, 1) do
+    it 'can encrypt and decrypt a resource', freeze_time: Time.utc(2023, 1, 1) do
       token = described_class.encode(user)
       decrypted = described_class.decode(token)
 

@@ -5,7 +5,7 @@ RSpec.describe Devise::Passwordless::LoginToken do
     let(:user) { double(:user, email: 'email@example.com', to_key: 12345) }
 
     before do
-      Timecop.freeze(Time.new(2023,1,1))
+      Timecop.freeze(Time.utc(2023, 1, 1))
 
       allow(described_class).to receive(:secret_key).and_return('sekret')
     end

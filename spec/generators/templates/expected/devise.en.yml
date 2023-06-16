@@ -16,6 +16,7 @@ en:
       unauthenticated: "You need to sign in or sign up before continuing."
       unconfirmed: "You have to confirm your email address before continuing."
       magic_link_invalid: "Invalid or expired login link."
+      magic_link_refresh: "Your login link has expired, please check your email for a new login link."
     mailer:
       confirmation_instructions:
         subject: "Confirmation instructions"

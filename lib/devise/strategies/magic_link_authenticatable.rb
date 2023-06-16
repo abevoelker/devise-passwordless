@@ -22,6 +22,23 @@ module Devise
       def authenticate!
         begin
           data = decode_passwordless_token
+        rescue Devise::Passwordless::LoginToken::ExpiredTokenError
+          # Send a new token
+          if Devise.passwordless_auto_refresh_expired_login_links
+            # Send a new login link email
+            resource = mapping.to.find_by(id: data["data"]["resource"]["key"])
+            if resource && Devise.passwordless_auto_refresh_expired_login_links
+              resource.send_magic_link(true)
+              fail!(:magic_link_refresh)
+            else
+              fail!(:magic_link_invalid)
+            end
+
+          else
+            fail!(:magic_link_invalid)
+          end
+
+          return
         rescue Devise::Passwordless::LoginToken::InvalidOrExpiredTokenError
           fail!(:magic_link_invalid)
           return

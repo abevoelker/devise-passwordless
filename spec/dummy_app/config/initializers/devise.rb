@@ -328,8 +328,4 @@ Devise.setup do |config|
   # generated before the user's current sign in time to be expired. In other words,
   # each time you sign in, all existing magic links will be considered invalid.
   # config.passwordless_expire_old_tokens_on_sign_in = false
-
-  # If a user visits via an expired login_link, automatically
-  # send them a fresh login link.
-  # config.passwordless_auto_refresh_expired_login_links = false
 end

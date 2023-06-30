@@ -1,7 +1,6 @@
 module Devise::Passwordless
   class LoginToken
     class InvalidOrExpiredTokenError < StandardError; end
-    class ExpiredTokenError < InvalidOrExpiredTokenError; end
 
     def self.encode(resource, extra=nil)
       now = Time.current
@@ -43,7 +42,7 @@ module Devise::Passwordless
 
       created_at = ActiveSupport::TimeZone["UTC"].at(decrypted_data["created_at"])
       if as_of.to_f > (created_at + expire_duration).to_f
-        raise ExpiredTokenError
+        raise InvalidOrExpiredTokenError
       end
 
       decrypted_data

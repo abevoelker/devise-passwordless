@@ -46,8 +46,7 @@ module Devise
         Devise::Models.config(self,
           :passwordless_login_within,
           :passwordless_secret_key,
-          :passwordless_expire_old_tokens_on_sign_in,
-          :passwordless_auto_refresh_expired_login_links
+          :passwordless_expire_old_tokens_on_sign_in
         )
       end
     end
@@ -63,7 +62,4 @@ module Devise
 
   mattr_accessor :passwordless_expire_old_tokens_on_sign_in
   @@passwordless_expire_old_tokens_on_sign_in = false
-
-  mattr_accessor :passwordless_auto_refresh_expired_login_links
-  @@passwordless_auto_refresh_expired_login_links = false
 end

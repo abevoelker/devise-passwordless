@@ -25,10 +25,9 @@ module Devise
         rescue Devise::Passwordless::LoginToken::ExpiredTokenError
           # Send a new token
           if Devise.passwordless_auto_refresh_expired_login_links
-            old_data = decode_passwordless_token(ignore_expiration: true)
             # Send a new login link email
-            resource = mapping.to.find_by(id: old_data["data"]["resource"]["key"])
-            if resource
+            resource = mapping.to.find_by(id: data["data"]["resource"]["key"])
+            if resource && Devise.passwordless_auto_refresh_expired_login_links
               resource.send_magic_link(true)
               fail!(:magic_link_refresh)
             else
@@ -69,12 +68,8 @@ module Devise
 
       private
 
-      def decode_passwordless_token(ignore_expiration: false)
-        if ignore_expiration
-          Devise::Passwordless::LoginToken.decode(self.token, Time.current, 100.years)
-        else
-          Devise::Passwordless::LoginToken.decode(self.token)
-        end
+      def decode_passwordless_token
+        Devise::Passwordless::LoginToken.decode(self.token)
       end
 
       # Sets the authentication hash and the token from params_auth_hash or http_auth_hash.

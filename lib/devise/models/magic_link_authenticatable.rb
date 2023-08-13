@@ -6,7 +6,7 @@ module Devise
       extend ActiveSupport::Concern
 
       def password_required?
-        false
+        !persisted? || !password.nil? || !password_confirmation.nil? || !password.blank?
       end
 
       # Not having a password method breaks the :validatable module

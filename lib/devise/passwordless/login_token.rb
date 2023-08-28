@@ -26,6 +26,7 @@ module Devise::Passwordless
     def self.decode(token, as_of=Time.current, expire_duration=Devise.passwordless_login_within)
       raise InvalidOrExpiredTokenError if token.blank?
       salt_base64, encrypted_data = token.split(":")
+      raise InvalidOrExpiredTokenError if salt_base64.blank? || encrypted_data.blank?
       begin
         salt = Base64.strict_decode64(salt_base64)
       rescue ArgumentError

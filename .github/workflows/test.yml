@@ -49,4 +49,5 @@ jobs:
           BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}
         run: |
           bundle
+          bundle exec rake db:drop db:create db:migrate
           bundle exec rake

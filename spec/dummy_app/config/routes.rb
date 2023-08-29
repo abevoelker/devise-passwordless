@@ -6,5 +6,5 @@ Rails.application.routes.draw do
       to: "devise/passwordless/magic_links#show",
       as: "passwordless_users_magic_link"
   end
-  root to: proc { [200, {}, ['<html />']] }
+  root to: "welcome#index"
 end

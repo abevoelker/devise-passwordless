@@ -1,0 +1,11 @@
+<h1>Welcome</h1>
+
+<h2>Sign-in status</h2>
+
+<p class="passwordless_user">PasswordlessUser:
+<% if current_passwordless_user %>
+  <span class="email"><%= current_passwordless_user.email %></span>
+<% else %>
+  <span>(not signed in)</span>
+<% end %>
+</p>

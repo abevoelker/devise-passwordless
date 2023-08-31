@@ -1,10 +1,9 @@
-# frozen_string_literal: true
-
-class Devise::Passwordless::MagicLinksController < DeviseController
+class Devise::MagicLinksController < DeviseController
   prepend_before_action :require_no_authentication, only: :show
   prepend_before_action :allow_params_authentication!, only: :show
   prepend_before_action(only: [:show]) { request.env["devise.skip_timeout"] = true }
 
+  # GET /resource/magic_link
   def show
     self.resource = warden.authenticate!(auth_options)
     set_flash_message!(:notice, :signed_in)

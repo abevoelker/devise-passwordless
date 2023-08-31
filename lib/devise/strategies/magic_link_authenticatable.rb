@@ -68,10 +68,3 @@ module Devise
 end
 
 Warden::Strategies.add(:magic_link_authenticatable, Devise::Strategies::MagicLinkAuthenticatable)
-
-Devise.add_module(:magic_link_authenticatable, {
-  strategy: true,
-  controller: :sessions,
-  route: :session,
-  model: "devise/models/magic_link_authenticatable",
-})

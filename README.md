@@ -53,11 +53,6 @@ Then, you'll need to set up your Devise routes like so to use the passwordless c
 Rails.application.routes.draw do
   devise_for :users,
     controllers: { sessions: "devise/passwordless/sessions" }
-  devise_scope :user do
-    get "/users/magic_link",
-      to: "devise/passwordless/magic_links#show",
-      as: "users_magic_link"
-  end
 end
 ```
 

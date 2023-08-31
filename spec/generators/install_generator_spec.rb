@@ -49,7 +49,6 @@ RSpec.describe Devise::Passwordless::Generators::InstallGenerator, type: :genera
     end
 
     it "generates the controllers" do
-      assert_file "app/controllers/devise/passwordless/magic_links_controller.rb", /Devise::Passwordless::MagicLinksController/
       assert_file "app/controllers/devise/passwordless/sessions_controller.rb", /Devise::Passwordless::SessionsController/
     end
   end
@@ -60,7 +59,6 @@ RSpec.describe Devise::Passwordless::Generators::InstallGenerator, type: :genera
     end
 
     it "generates the controllers" do
-      assert_file "app/controllers/devise/passwordless/magic_links_controller.rb", /Devise::Passwordless::MagicLinksController/
       assert_file "app/controllers/devise/passwordless/sessions_controller.rb", /Devise::Passwordless::SessionsController/
     end
   end

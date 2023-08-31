@@ -46,7 +46,7 @@ class User < ApplicationRecord
 end
 ```
 
-Then, you'll need to set up your Devise routes like so to use the passwordless controllers to modify Devise's default session create logic and to handle processing magic links:
+Then, change your route to process sessions using the passwordless sessions controller:
 
 ```ruby
 # config/routes.rb
@@ -56,7 +56,7 @@ Rails.application.routes.draw do
 end
 ```
 
-Finally, you'll want to update Devise's generated views to remove references to passwords, since you don't need them any more!
+Finally, you'll want to update Devise's generated views to remove references to passwords, since you don't need them anymore!
 
 These files/directories can be deleted entirely:
 

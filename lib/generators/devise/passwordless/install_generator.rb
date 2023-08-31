@@ -11,10 +11,6 @@ module Devise::Passwordless
         File.dirname(__FILE__)
       end
 
-      def create_sessions_controller
-        template "sessions_controller.rb.erb", "app/controllers/devise/passwordless/sessions_controller.rb"
-      end
-
       def update_devise_initializer
         inject_into_file 'config/initializers/devise.rb', before: /^end$/ do <<~'CONFIG'.indent(2)
 

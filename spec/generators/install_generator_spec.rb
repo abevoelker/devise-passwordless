@@ -47,19 +47,5 @@ RSpec.describe Devise::Passwordless::Generators::InstallGenerator, type: :genera
       expected = File.read(expected_mailer_view)
       expect(File.read(File.join(destination_root, "app/views/devise/mailer/magic_link.html.erb"))).to eq(expected)
     end
-
-    it "generates the controllers" do
-      assert_file "app/controllers/devise/passwordless/sessions_controller.rb", /Devise::Passwordless::SessionsController/
-    end
-  end
-
-  context "Devise not installed" do
-    before do
-      run_generator
-    end
-
-    it "generates the controllers" do
-      assert_file "app/controllers/devise/passwordless/sessions_controller.rb", /Devise::Passwordless::SessionsController/
-    end
   end
 end

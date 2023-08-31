@@ -1,6 +1,3 @@
-# frozen_string_literal: true
-
-<% module_namespacing do -%>
 class Devise::Passwordless::SessionsController < Devise::SessionsController
   def create
     self.resource = resource_class.find_by(email: create_params[:email])
@@ -31,4 +28,3 @@ class Devise::Passwordless::SessionsController < Devise::SessionsController
     resource_params.permit(:email, :remember_me)
   end
 end
-<% end -%>

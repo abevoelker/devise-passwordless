@@ -10,6 +10,8 @@ module Devise::Passwordless
         route: { magic_link: [nil, :show], session: [nil, :new, :destroy] },
         controller: :sessions,
       })
+
+      require "devise/passwordless/mailer"
     end
   end
 end

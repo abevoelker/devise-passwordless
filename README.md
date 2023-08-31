@@ -92,7 +92,6 @@ Configuration options are stored in Devise's initializer at `config/initializers
 # ==> Configuration for :magic_link_authenticatable
 
 # Need to use a custom Devise mailer in order to send magic links
-require "devise/passwordless/mailer"
 config.mailer = "Devise::Passwordless::Mailer"
 
 # Time period after a magic login link is sent out that it will be valid for.
@@ -154,18 +153,8 @@ Then just set up your routes like this:
 Rails.application.routes.draw do
   devise_for :users,
     controllers: { sessions: "devise/passwordless/sessions" }
-  devise_scope :user do
-    get "/users/magic_link",
-      to: "devise/passwordless/magic_links#show",
-      as: "users_magic_link"
-  end
   devise_for :admins,
     controllers: { sessions: "devise/passwordless/sessions" }
-  devise_scope :admin do
-    get "/admins/magic_link",
-      to: "devise/passwordless/magic_links#show",
-      as: "admins_magic_link"
-  end
 end
 ```
 

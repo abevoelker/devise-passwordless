@@ -112,6 +112,29 @@ config.passwordless_tokenizer = "SignedGlobalIDTokenizer"
 # config.passwordless_expire_old_tokens_on_sign_in = false
 ```
 
+Most config options can be set on a per-model basis. For instance,
+you can use different tokenizers across different models like so:
+
+```ruby
+# app/models/user.rb
+class User < ApplicationRecord
+  devise :magic_link_authenticatable
+
+  def self.passwordless_tokenizer
+    "SignedGlobalIDTokenizer"
+  end
+end
+
+# app/models/another_user.rb
+class AnotherUser < ApplicationRecord
+  devise :magic_link_authenticatable
+
+  def self.passwordless_tokenizer
+    "MessageEncryptorTokenizer"
+  end
+end
+```
+
 To customize the magic link email subject line and other status and error messages, modify these values in `config/locales/devise.en.yml`:
 
 ```yaml

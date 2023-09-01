@@ -94,6 +94,9 @@ Configuration options are stored in Devise's initializer at `config/initializers
 # Need to use a custom Devise mailer in order to send magic links
 config.mailer = "Devise::Passwordless::Mailer"
 
+# Which algorithm to use for tokenizing magic links. See README for descriptions
+config.passwordless_tokenizer = "SignedGlobalIDTokenizer"
+
 # Time period after a magic login link is sent out that it will be valid for.
 # config.passwordless_login_within = 20.minutes
 

@@ -14,8 +14,12 @@ module Devise
         nil
       end
 
+      def encode_passwordless_token(*args)
+        self.class.passwordless_tokenizer_class.encode(self, *args)
+      end
+
       def send_magic_link(remember_me, opts = {})
-        token = Devise::Passwordless::LoginToken.encode(self)
+        token = self.encode_passwordless_token
         send_devise_notification(:magic_link, token, remember_me, opts)
       end
 
@@ -35,6 +39,14 @@ module Devise
       protected
 
       module ClassMethods
+        def passwordless_tokenizer_class
+          @passwordless_tokenizer_class ||= "Devise::Passwordless::#{self.passwordless_tokenizer}".constantize
+        end
+
+        def decode_passwordless_token(*args)
+          passwordless_tokenizer_class.decode(*args)
+        end
+
         # We assume this method already gets the sanitized values from the
         # MagicLinkAuthenticatable strategy. If you are using this method on
         # your own, be sure to sanitize the conditions hash to only include
@@ -44,6 +56,7 @@ module Devise
         end
 
         Devise::Models.config(self,
+          :passwordless_tokenizer,
           :passwordless_login_within,
           :passwordless_secret_key,
           :passwordless_expire_old_tokens_on_sign_in
@@ -54,6 +67,27 @@ module Devise
 end
 
 module Devise
+  mattr_accessor :passwordless_tokenizer
+  @@passwordless_tokenizer = nil
+  def self.passwordless_tokenizer
+    if @@passwordless_tokenizer.blank?
+      Devise::Passwordless.deprecator.warn <<-DEPRECATION.strip_heredoc
+        [Devise-Passwordless] `Devise.passwordless_tokenizer` is a required
+        config option. If you are upgrading to Devise-Passwordless 1.0 from
+        a previous install, you should use "MessageEncryptorTokenizer" for
+        backwards compatibility. New installs are templated with
+        "SignedGlobalIDTokenizer". Read the README for a comparison of
+        options and UPGRADING for upgrade instructions. Execution will
+        now proceed with a value of "MessageEncryptorTokenizer" but future
+        releases will raise an error if this option is unset.
+      DEPRECATION
+
+      "MessageEncryptorTokenizer"
+    else
+      @@passwordless_tokenizer
+    end
+  end
+
   mattr_accessor :passwordless_login_within
   @@passwordless_login_within = 20.minutes
 

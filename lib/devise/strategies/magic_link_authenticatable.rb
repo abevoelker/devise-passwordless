@@ -20,29 +20,19 @@ module Devise
       end
 
       def authenticate!
+        resource_class = mapping.to
+
         begin
-          data = decode_passwordless_token
-        rescue Devise::Passwordless::LoginToken::InvalidOrExpiredTokenError
+          resource, extra = resource_class.decode_passwordless_token(token, resource_class)
+        rescue Devise::Passwordless::InvalidOrExpiredTokenError
           fail!(:magic_link_invalid)
           return
-        end
-
-        resource = mapping.to.find_by(id: data["data"]["resource"]["key"])
-
-        if resource && Devise.passwordless_expire_old_tokens_on_sign_in
-          if (last_login = resource.try(:current_sign_in_at))
-            token_created_at = ActiveSupport::TimeZone["UTC"].at(data["created_at"])
-            if token_created_at < last_login
-              fail!(:magic_link_invalid)
-              return
-            end
-          end
         end
 
         if validate(resource)
           remember_me(resource)
           resource.after_magic_link_authentication
-          env['warden.magic_link_extra'] = data['data'].delete('extra')
+          env['warden.magic_link_extra'] = extra.fetch('data', {}).delete('extra')
           success!(resource)
         else
           fail!(:magic_link_invalid)
@@ -50,10 +40,6 @@ module Devise
       end
 
       private
-
-      def decode_passwordless_token
-        Devise::Passwordless::LoginToken.decode(self.token)
-      end
 
       # Sets the authentication hash and the token from params_auth_hash or http_auth_hash.
       def with_authentication_hash(auth_type, auth_values)

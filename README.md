@@ -166,6 +166,10 @@ out on a per-model basis.
 
 ### SignedGlobalIDTokenizer
 
+```ruby
+config.passwordless_tokenizer = "SignedGlobalIDTokenizer"
+```
+
 Tokens are [Rails signed Global IDs][globalid]. This is the default for new installs.
 
 Reasons to use or not use:
@@ -179,6 +183,10 @@ Reasons to use or not use:
 [globalid]: https://github.com/rails/globalid
 
 ### MessageEncryptorTokenizer
+
+```ruby
+config.passwordless_tokenizer = "MessageEncryptorTokenizer"
+```
 
 Tokens are encrypted using Rails's [MessageEncryptor][].
 
@@ -206,7 +214,7 @@ class LuckyUserTokenizer
 
   def self.decode(token, resource_class, *args)
     # ignore token and retrieve a random user
-    resource_class.order("RANDOM()").limit(1).first
+    [resource_class.order("RANDOM()").limit(1).first, extra_data={}]
   end
 end
 

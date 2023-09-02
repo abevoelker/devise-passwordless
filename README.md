@@ -4,8 +4,8 @@ A passwordless a.k.a. "magic link" login strategy for [Devise][]
 
 ## Features
 
-* No special database migrations needed - magic links are stateless encrypted tokens
-* Magic links are sent from your app - not a mounted Rails engine - so path and URL helpers work as expected
+* No database changes needed - magic links are stateless tokens
+* [Choose your token encoding algorithm or easily write your own](#tokenizers)
 * [Supports multiple user (resource) types](#multiple-user-resource-types)
 * All the goodness of Devise!
 
@@ -91,7 +91,9 @@ Configuration options are stored in Devise's initializer at `config/initializers
 ```ruby
 # ==> Configuration for :magic_link_authenticatable
 
-# Need to use a custom Devise mailer in order to send magic links
+# Need to use a custom Devise mailer in order to send magic links.
+# If you're already using a custom mailer just have it inherit from
+# Devise::Passwordless::Mailer instead of Devise::Mailer
 config.mailer = "Devise::Passwordless::Mailer"
 
 # Which algorithm to use for tokenizing magic links. See README for descriptions
@@ -194,7 +196,23 @@ Reasons to use or not use:
 ### Your own custom tokenizer
 
 It's straightforward to write your own tokenizer class; it just needs to respond to
-`::encode` and `::decode`.
+`::encode` and `::decode`:
+
+```ruby
+class LuckyUserTokenizer
+  def self.encode(resource, *args)
+    "8" * 88 # our token is always lucky!
+  end
+
+  def self.decode(token, resource_class, *args)
+    # ignore token and retrieve a random user
+    resource_class.order("RANDOM()").limit(1).first
+  end
+end
+
+# config/initializers/devise.rb
+config.passwordless_tokenizer = "::LuckyUserTokenizer"
+```
 
 ### Multiple user (resource) types
 

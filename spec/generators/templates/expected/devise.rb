@@ -311,8 +311,13 @@ Devise.setup do |config|
 
   # ==> Configuration for :magic_link_authenticatable
 
-  # Need to use a custom Devise mailer in order to send magic links
+  # Need to use a custom Devise mailer in order to send magic links.
+  # If you're already using a custom mailer just have it inherit from
+  # Devise::Passwordless::Mailer instead of Devise::Mailer
   config.mailer = "Devise::Passwordless::Mailer"
+
+  # Which algorithm to use for tokenizing magic links. See README for descriptions
+  config.passwordless_tokenizer = "SignedGlobalIDTokenizer"
 
   # Time period after a magic login link is sent out that it will be valid for.
   # config.passwordless_login_within = 20.minutes

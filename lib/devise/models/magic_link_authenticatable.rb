@@ -40,7 +40,15 @@ module Devise
 
       module ClassMethods
         def passwordless_tokenizer_class
-          @passwordless_tokenizer_class ||= "Devise::Passwordless::#{self.passwordless_tokenizer}".constantize
+          @passwordless_tokenizer_class ||= self.passwordless_tokenizer.is_a?(Class) ? (
+            self.passwordless_tokenizer
+          ) : (
+            self.passwordless_tokenizer.start_with?("::") ? (
+              self.passwordless_tokenizer.constantize
+            ) : (
+              "Devise::Passwordless::#{self.passwordless_tokenizer}".constantize
+            )
+          )
         end
 
         def decode_passwordless_token(*args)
@@ -58,7 +66,7 @@ module Devise
         Devise::Models.config(self,
           :passwordless_tokenizer,
           :passwordless_login_within,
-          :passwordless_secret_key,
+          #:passwordless_secret_key,
           :passwordless_expire_old_tokens_on_sign_in
         )
       end

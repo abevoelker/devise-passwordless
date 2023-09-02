@@ -132,6 +132,9 @@ class AnotherUser < ApplicationRecord
   def self.passwordless_tokenizer
     "MessageEncryptorTokenizer"
   end
+  def self.passwordless_login_within
+    1.hour
+  end
 end
 ```
 
@@ -153,6 +156,40 @@ en:
 To customize the magic link email body, edit `app/views/devise/mailer/magic_link.html.erb`
 
 To customise email headers (including the email subject as well as more unusual headers like `X-Entity-Ref-ID`) pass them in a hash to `resource.send_magic_link` in `SessionsController`, eg. `resource.send_magic_link(create_params[:remember_me], subject: "Your login link has arrived!")`.
+
+### Tokenizers
+
+#### `SignedGlobalIDTokenizer`
+
+Tokens are [Rails signed Global IDs][globalid].
+
+Reasons to use or not use:
+
+* The implementation is short and simple, so less likely to be buggy
+* Cannot add arbitrary metadata to generated tokens
+* Tokens are signed, not encrypted, so some data will be visible when base64-decoded
+* Tokens tend to be a little longer (~30 chars IME) than MessageEncryptors'
+
+[globalid]: https://github.com/rails/globalid
+
+#### `MessageEncryptorTokenizer`
+
+Tokens are encrypted using Rails's [MessageEncryptor][].
+
+[MessageEncryptor]: https://api.rubyonrails.org/classes/ActiveSupport/MessageEncryptor.html
+
+Reasons to use or not use:
+
+* This was the only tokenizer in previous library versions
+* The implementation is longer and more involved than SignedGlobalID
+* Can add arbitrary extra metadata to tokens
+* Tokens are opaque, due to being encrypted - no data visible when base64-decoded
+* Tokens tend to be a little shorter than SignedGlobalID IME
+
+#### Your own custom tokenizer
+
+It's straightforward to write your own tokenizer class; it just needs to respond to
+`::encode` and `::decode`.
 
 ### Multiple user (resource) types
 

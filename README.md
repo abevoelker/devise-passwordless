@@ -157,22 +157,26 @@ To customize the magic link email body, edit `app/views/devise/mailer/magic_link
 
 To customise email headers (including the email subject as well as more unusual headers like `X-Entity-Ref-ID`) pass them in a hash to `resource.send_magic_link` in `SessionsController`, eg. `resource.send_magic_link(create_params[:remember_me], subject: "Your login link has arrived!")`.
 
-### Tokenizers
+## Tokenizers
 
-#### `SignedGlobalIDTokenizer`
+The algorithm used to encode and decode tokens can be fully customized and swapped
+out on a per-model basis.
 
-Tokens are [Rails signed Global IDs][globalid].
+### SignedGlobalIDTokenizer
+
+Tokens are [Rails signed Global IDs][globalid]. This is the default for new installs.
 
 Reasons to use or not use:
 
 * The implementation is short and simple, so less likely to be buggy
+* Should work with all ORMs that implement GlobalID support
 * Cannot add arbitrary metadata to generated tokens
 * Tokens are signed, not encrypted, so some data will be visible when base64-decoded
 * Tokens tend to be a little longer (~30 chars IME) than MessageEncryptors'
 
 [globalid]: https://github.com/rails/globalid
 
-#### `MessageEncryptorTokenizer`
+### MessageEncryptorTokenizer
 
 Tokens are encrypted using Rails's [MessageEncryptor][].
 
@@ -182,11 +186,12 @@ Reasons to use or not use:
 
 * This was the only tokenizer in previous library versions
 * The implementation is longer and more involved than SignedGlobalID
+* Written with ActiveRecord in mind but may work with other ORMs
 * Can add arbitrary extra metadata to tokens
 * Tokens are opaque, due to being encrypted - no data visible when base64-decoded
 * Tokens tend to be a little shorter than SignedGlobalID IME
 
-#### Your own custom tokenizer
+### Your own custom tokenizer
 
 It's straightforward to write your own tokenizer class; it just needs to respond to
 `::encode` and `::decode`.

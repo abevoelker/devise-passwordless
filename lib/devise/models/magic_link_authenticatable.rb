@@ -14,8 +14,8 @@ module Devise
         nil
       end
 
-      def encode_passwordless_token(*args)
-        self.class.passwordless_tokenizer_class.encode(self, *args)
+      def encode_passwordless_token(*args, **kwargs)
+        self.class.passwordless_tokenizer_class.encode(self, *args, **kwargs)
       end
 
       def send_magic_link(remember_me, opts = {})
@@ -51,8 +51,8 @@ module Devise
           )
         end
 
-        def decode_passwordless_token(*args)
-          passwordless_tokenizer_class.decode(*args)
+        def decode_passwordless_token(*args, **kwargs)
+          passwordless_tokenizer_class.decode(*args, **kwargs)
         end
 
         # We assume this method already gets the sanitized values from the

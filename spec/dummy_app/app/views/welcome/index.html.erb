@@ -17,3 +17,11 @@
   <span>(not signed in)</span>
 <% end %>
 </p>
+
+<p class="password_user">PasswordUser:
+<% if current_password_user %>
+  <span class="email"><%= current_password_user.email %></span>
+<% else %>
+  <span>(not signed in)</span>
+<% end %>
+</p>

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :password_users
   # Passwordless users with :confirmable behavior
   # (users are logged out until they confirm their email address)
   devise_for :passwordless_confirmable_users,

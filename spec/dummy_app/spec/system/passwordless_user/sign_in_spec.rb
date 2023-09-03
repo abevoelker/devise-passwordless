@@ -41,4 +41,30 @@ RSpec.describe "PasswordlessUser sign in", :type => :system do
 
     include_examples "resource sign-in shared examples"
   end
+
+  context "custom sessions controller" do
+    let(:sign_in_path) { "/test_custom_controllers/passwordless_users/sign_in" }
+    let!(:user) { PasswordlessUser.create(email: email) }
+
+    it "uses a custom sessions controller" do
+      visit sign_in_path
+
+      fill_in "Email", with: email
+      click_button "Log in"
+
+      expect(current_path).to eq("/test_custom_controllers/foo")
+      expect(page.body).to eq("foo")
+    end
+  end
+
+  context "custom magic links controller" do
+    let(:magic_link_path) { "/test_custom_controllers/passwordless_users/magic_link" }
+
+    it "uses a custom magic links controller" do
+      visit magic_link_path
+
+      expect(current_path).to eq("/test_custom_controllers/bar")
+      expect(page.body).to eq("bar")
+    end
+  end
 end

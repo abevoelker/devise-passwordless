@@ -40,7 +40,7 @@ RSpec.describe Devise::Passwordless::MessageEncryptorTokenizer do
 
 
       it 'can encrypt and decrypt a resource with extra data supplied', freeze_time: Time.utc(2023, 1, 1) do
-        token = described_class.encode(user, { foo: :bar })
+        token = described_class.encode(user, extra: { foo: :bar })
         resource, data = described_class.decode(token, user_class)
 
         expected_decrypt =
@@ -98,10 +98,10 @@ RSpec.describe Devise::Passwordless::MessageEncryptorTokenizer do
               described_class.encode(user)
             end
             Timecop.freeze(start + 4.minutes) do
-              expect{described_class.decode(token, user_class, Time.current, 5.minutes)}.not_to raise_error(Devise::Passwordless::InvalidOrExpiredTokenError)
+              expect{described_class.decode(token, user_class, as_of: Time.current, expire_duration: 5.minutes)}.not_to raise_error(Devise::Passwordless::InvalidOrExpiredTokenError)
             end
             Timecop.freeze(start + 6.minutes) do
-              expect{described_class.decode(token, user_class, Time.current, 5.minutes)}.to raise_error(Devise::Passwordless::InvalidOrExpiredTokenError)
+              expect{described_class.decode(token, user_class, as_of: Time.current, expire_duration: 5.minutes)}.to raise_error(Devise::Passwordless::InvalidOrExpiredTokenError)
             end
           end
         end
@@ -112,8 +112,8 @@ RSpec.describe Devise::Passwordless::MessageEncryptorTokenizer do
             token = Timecop.freeze(start) do
               described_class.encode(user)
             end
-            expect{described_class.decode(token, user_class, start + 5.minutes, 5.minutes)}.not_to raise_error(Devise::Passwordless::InvalidOrExpiredTokenError)
-            expect{described_class.decode(token, user_class, start + 6.minutes, 5.minutes)}.to raise_error(Devise::Passwordless::InvalidOrExpiredTokenError)
+            expect{described_class.decode(token, user_class, as_of: start + 5.minutes, expire_duration: 5.minutes)}.not_to raise_error(Devise::Passwordless::InvalidOrExpiredTokenError)
+            expect{described_class.decode(token, user_class, as_of: start + 6.minutes, expire_duration: 5.minutes)}.to raise_error(Devise::Passwordless::InvalidOrExpiredTokenError)
           end
         end
       end

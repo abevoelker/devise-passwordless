@@ -1,6 +1,6 @@
 module Devise::Passwordless
   class MessageEncryptorTokenizer
-    def self.encode(resource, extra=nil)
+    def self.encode(resource, extra: nil)
       now = Time.current
       len = ActiveSupport::MessageEncryptor.key_len
       salt = SecureRandom.random_bytes(len)
@@ -21,7 +21,7 @@ module Devise::Passwordless
       "#{salt_base64}:#{encrypted_data}"
     end
 
-    def self.decode(token, resource_class, as_of=Time.current, expire_duration=Devise.passwordless_login_within)
+    def self.decode(token, resource_class, as_of: Time.current, expire_duration: Devise.passwordless_login_within)
       raise InvalidTokenError if token.blank?
       salt_base64, encrypted_data = token.split(":")
       raise InvalidTokenError if salt_base64.blank? || encrypted_data.blank?

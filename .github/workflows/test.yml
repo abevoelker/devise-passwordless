@@ -40,15 +40,33 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install Yarn
+        run: npm install -g yarn
       - name: Run gem tests
         run: |
+          bundle config set --local path '/tmp/gem-tests'
           bundle
           bundle exec rake
+      - name: Set up new Rails dummy app
+        working-directory: ./spec
+        env:
+          FOO: dummy_app_config/gemfiles/Gemfile-rails-${{ matrix.rails-version }}
+        run: |
+          bundle config set --local path '/tmp/system-tests'
+          BUNDLE_GEMFILE=$FOO bundle
+          rails new dummy_app --database=sqlite3 --skip-active-storage --skip-action-cable --skip-spring --skip-listen --skip-test
+          cat dummy_app_config/Gemfile.append >> dummy_app/Gemfile
+          cd dummy_app
+          bundle
+          rails g rspec:install
+          cp -rf ../dummy_app_config/shared_source/all/* ./
+          cp -rf ../dummy_app_config/shared_source/${{ matrix.rails-version }}/* ./
+          yarn install
       - name: Run Rails dummy app tests
         working-directory: ./spec/dummy_app
-        env:
-          BUNDLE_GEMFILE: gemfiles/Gemfile-rails-${{ matrix.rails-version }}
         run: |
-          bundle
-          bundle exec rake db:drop db:create db:migrate
-          bundle exec rake
+          rake db:drop db:create db:migrate
+          rake

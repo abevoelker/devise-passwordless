@@ -1,4 +1,4 @@
 --format documentation
 --color
 --require spec_helper
---exclude-pattern "spec/dummy_app/**/**"
+--exclude-pattern "spec/dummy_app*/**/**"

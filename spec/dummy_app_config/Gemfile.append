@@ -1,0 +1,10 @@
+### ADDED GEMS BEGIN HERE ###
+
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'capybara'
+  gem 'selenium-webdriver'
+end
+
+gem "devise"
+gem "devise-passwordless", :path => "../../../"

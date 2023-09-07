@@ -1,6 +1,6 @@
 module Devise::Passwordless
   class Engine < Rails::Engine
-    config.after_initialize do
+    initializer "devise_passwordless.routing" do
       require "devise/passwordless/routing"
 
       Devise.add_module(:magic_link_authenticatable, {

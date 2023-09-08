@@ -56,7 +56,7 @@ See the [customization section](#customization) for details on what gets install
 
 ## Usage
 
-This gem adds a `:magic_link_authenticatable` strategy that can be used in your Devise models for passwordless authentication. This strategy plays well with most other Devise strategies (see [*notes on other Devise strategies*](#notes-on-other-devise-strategies)).
+This gem adds a `:magic_link_authenticatable` strategy that can be used in your Devise models for passwordless authentication. This strategy plays well with most other Devise strategies (see [*compatibility with other Devise strategies*](#compatibility-with-other-devise-strategies)).
 
 For example, if your Devise model is User, enable the strategy like this:
 
@@ -314,7 +314,7 @@ end
 config.passwordless_tokenizer = "::LuckyUserTokenizer"
 ```
 
-### Multiple user (resource) types
+## Multiple user (resource) types
 
 Devise supports multiple resource types, so we do too.
 
@@ -369,7 +369,7 @@ en:
         admin_subject: "Here's your ADMIN magic login link ✨"
 ```
 
-#### Scoped views
+### Scoped views
 
 If you have multiple Devise models, some that are passwordless and some that aren't, you will probably want to enable [Devise's `scoped_views` setting](https://henrytabima.github.io/rails-setup/docs/devise/configuring-views) so that the models have different signup and login pages (since some models will need password fields and others won't).
 
@@ -408,6 +408,39 @@ values.
 See the [Devise 4.9 Turbo upgrade guide][] for more info.
 
 [Devise 4.9 Turbo upgrade guide]: https://github.com/heartcombo/devise/wiki/How-To:-Upgrade-to-Devise-4.9.0-%5BHotwire-Turbo-integration%5D
+
+## ActiveJob support
+
+If you want to use ActiveJob to send magic link emails asynchronously through
+a queuing backend, you can accomplish it the same way you
+[enable this functionality in any Devise install][]:
+
+```ruby
+class User
+  def send_devise_notification(notification, *args)
+    devise_mailer.send(notification, self, *args).deliver_later
+  end
+end
+```
+
+[devise-activejob]: https://github.com/heartcombo/devise/blob/main/README.md#activejob-integration
+
+## Rails logs security
+
+Default logging behavior in Rails can cause plaintext magic link tokens to leak into log files:
+
+1. Action Mailer logs the entire contents of all outgoing emails to the DEBUG level. Magic link tokens delivered to users in email will be leaked.
+2. Active Job logs all arguments to every enqueued job at the INFO level. If you configure Devise to use `deliver_later` to send passwordless emails, magic link tokens will be leaked.
+
+Rails sets the production logger level to INFO by default. Consider changing your production logger level to WARN if you wish to prevent tokens from being leaked into your logs. In `config/environments/production.rb`:
+
+```ruby
+config.log_level = :warn
+```
+
+(Adapted from the [Devise guide on password reset tokens][], which this section also applies to)
+
+[Devise guide on reset password tokens]: https://github.com/heartcombo/devise/blob/main/README.md#password-reset-tokens-and-rails-logs
 
 ## Alternatives
 

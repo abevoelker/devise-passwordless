@@ -28,7 +28,7 @@ gem "devise-passwordless", github: "abevoelker/devise-passwordless"
 If you're upgrading from 0.x to 1.0, read [the upgrade guide][] for
 a list of changes you'll need to make.
 
-[the upgrade guide]: https://github.com/abevoelker/devise-passwordless/blob/master/README.md
+[the upgrade guide]: https://github.com/abevoelker/devise-passwordless/blob/master/UPGRADING.md
 
 ## Installation
 

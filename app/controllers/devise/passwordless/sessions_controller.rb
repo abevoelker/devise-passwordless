@@ -1,18 +1,28 @@
 class Devise::Passwordless::SessionsController < Devise::SessionsController
   def create
-    self.resource = resource_class.find_by(email: create_params[:email])
-    if self.resource
+    if (self.resource = resource_class.find_by(email: create_params[:email]))
       resource.send_magic_link(create_params[:remember_me])
-      set_flash_message(:notice, :magic_link_sent)
-      redirect_to(action: :new, status: redirect_status)
+      set_flash_message!(:notice, :magic_link_sent)
+      redirect_to(after_magic_link_sent_path_for(resource), status: devise_redirect_status)
     else
-      set_flash_message(:alert, :not_found_in_database)
       self.resource = resource_class.new(create_params)
-      render :new, status: error_status
+      set_flash_message!(:alert, :not_found_in_database, now: true)
+      render :new, status: devise_error_status
     end
   end
 
   protected
+
+  # The path to redirect to after a magic link was sent.
+  def after_magic_link_sent_path_for(resource_or_scope)
+    stored_location = stored_location_for(resource_or_scope)
+    return stored_location if stored_location
+
+    scope = Devise::Mapping.find_scope!(resource_or_scope)
+    router_name = Devise.mappings[scope].router_name
+    context = router_name ? send(router_name) : self
+    context.respond_to?(:root_path) ? context.root_path : "/"
+  end
 
   def translation_scope
     if action_name == "create"
@@ -28,11 +38,13 @@ class Devise::Passwordless::SessionsController < Devise::SessionsController
     resource_params.permit(:email, :remember_me)
   end
 
-  def redirect_status
-    Devise.respond_to?(:responder) ? Devise.responder.redirect_status : :found
+  # Devise < 4.9 fallback support
+  # See: https://github.com/heartcombo/devise/wiki/How-To:-Upgrade-to-Devise-4.9.0-%5BHotwire-Turbo-integration%5D
+  def devise_redirect_status
+    Devise.try(:responder).try(:redirect_status) || :found
   end
 
-  def error_status
-    Devise.respond_to?(:responder) ? Devise.responder.error_status : :ok
+  def devise_error_status
+    Devise.try(:responder).try(:error_status) || :ok
   end
 end

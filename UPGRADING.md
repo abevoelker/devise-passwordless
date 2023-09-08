@@ -45,3 +45,8 @@ to have a successful upgrade:
     and `::decode_passwordless_token`.
   * References to `Devise::Passwordless::LoginToken.secret_key` should be
     changed to `Devise::Passwordless.secret_key`.
+
+* Hotwire/Turbo support
+  * If your Rails app uses Hotwire / Turbo, make sure you're using Devise >= 4.9
+    and setting the `config.responder` value in your Devise configuration
+    (see Devise Turbo upgrade guide: https://github.com/heartcombo/devise/wiki/How-To:-Upgrade-to-Devise-4.9.0-%5BHotwire-Turbo-integration%5D)

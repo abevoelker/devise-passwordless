@@ -307,6 +307,14 @@ end
 
 If using the `:confirmable` strategy, you may want to override the default Devise behavior of requiring a fresh login after email confirmation (e.g. [this](https://stackoverflow.com/a/39010334/215168) or [this](https://stackoverflow.com/a/25865526/215168) approach). Otherwise, users will have to get a fresh login link after confirming their email, which makes little sense if they just confirmed they own the email address.
 
+## Hotwire/Turbo support
+
+If you're using Hotwire/Turbo, be sure that you're on Devise >= 4.9 and that you're
+setting the `config.responder` config value in your Devise initializer to appropriate
+values. See the [Devise 4.9 Turbo upgrade guide][] for more info.
+
+[Devise 4.9 Turbo upgrade guide]: https://github.com/heartcombo/devise/wiki/How-To:-Upgrade-to-Devise-4.9.0-%5BHotwire-Turbo-integration%5D
+
 ## Alternatives
 
 Other Ruby libraries that offer passwordless authentication:

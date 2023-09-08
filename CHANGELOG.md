@@ -3,6 +3,8 @@
 ### Enhancements
 
 * Tokenization encoding/decoding is now fully customizable
+* Signed GlobalID tokenization supported (#22)
+* Turbo is now properly supported (#23 and #33 - thanks @iainbeeston and @til!)
 * More thorough integration testing using a dummy Rails app
 * Added a Rails engine to solve loading issues and tidy up file structuring
 * `Passwordless::SessionsController` now uses gem source instead of needing to be generated from a template

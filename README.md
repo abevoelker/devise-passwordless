@@ -413,7 +413,7 @@ See the [Devise 4.9 Turbo upgrade guide][] for more info.
 
 If you want to use ActiveJob to send magic link emails asynchronously through
 a queuing backend, you can accomplish it the same way you
-[enable this functionality in any Devise install][]:
+[enable this functionality in any Devise install][devise-activejob]:
 
 ```ruby
 class User
@@ -440,7 +440,7 @@ config.log_level = :warn
 
 (Adapted from the [Devise guide on password reset tokens][], which this section also applies to)
 
-[Devise guide on reset password tokens]: https://github.com/heartcombo/devise/blob/main/README.md#password-reset-tokens-and-rails-logs
+[Devise guide on password reset tokens]: https://github.com/heartcombo/devise/blob/main/README.md#password-reset-tokens-and-rails-logs
 
 ## Alternatives
 

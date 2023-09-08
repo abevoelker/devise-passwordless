@@ -62,7 +62,7 @@ to have a successful upgrade:
     and setting the `config.responder` value in your Devise configuration
     (see Devise Turbo upgrade guide: https://github.com/heartcombo/devise/wiki/How-To:-Upgrade-to-Devise-4.9.0-%5BHotwire-Turbo-integration%5D)
 
-* Resource `#send_magic_link` now uses keyword arguments instead of positional arguments.
+* The `#send_magic_link` method now uses keyword arguments instead of positional arguments.
   * Change any instances of
 
     ```ruby
@@ -75,3 +75,9 @@ to have a successful upgrade:
     ```ruby
     user.send_magic_link(remember_me: true, subject: "Custom email subject")
     ```
+
+* After sending a magic link, users will now be redirected rather than
+  re-rendering the sign-in form.
+  * [See the README][after-magic-link-sent-readme] for details on how to customize the redirect behavior
+
+[after-magic-link-sent-readme]: https://github.com/abevoelker/devise-passwordless#redirecting-after-magic-link-is-sent

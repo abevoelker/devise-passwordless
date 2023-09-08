@@ -67,4 +67,19 @@ RSpec.describe "PasswordlessUser sign in", :type => :system do
       expect(page.body).to eq("bar")
     end
   end
+
+  context "redirect sessions controller" do
+    let(:sign_in_path) { "/test_custom_after_magic_link_sent_redirect/passwordless_users/sign_in" }
+    let!(:user) { PasswordlessUser.create(email: email) }
+
+    it "uses the after_magic_link_sent_path_for" do
+      visit sign_in_path
+
+      fill_in "Email", with: email
+      click_button "Log in"
+
+      expect(current_path).to eq("/test_custom_after_magic_link_sent_redirect/baz")
+      expect(page.body).to eq("baz")
+    end
+  end
 end

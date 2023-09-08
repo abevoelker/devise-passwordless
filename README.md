@@ -199,6 +199,45 @@ To customize the magic link email body, edit `app/views/devise/mailer/magic_link
 
 To customise email headers (including the email subject as well as more unusual headers like `X-Entity-Ref-ID`) pass them in a hash to `resource.send_magic_link` in `SessionsController`, eg. `resource.send_magic_link(create_params[:remember_me], subject: "Your login link has arrived!")`.
 
+### Redirecting after magic link is sent
+
+After a magic link is sent, the user will be redirected. By default, the location is
+chosen based on these values, in order:
+
+1. `session["#{resource/scope}_return_to"]` session key (e.g. `session["user_return_to"]`)
+2. `:#{resource/scope}_root` route (e.g. `:user_root`)
+3. Otherwise, use the global `:root` route
+
+To customize the redirect, you can write a custom `after_magic_link_sent_path_for` helper,
+similar to [how Devise's `after_sign_in_path_for` helper works][after_sign_in_path_for]:
+
+```ruby
+class ApplicationController < ActionController::Base
+  def after_magic_link_sent_path_for(resource_or_scope)
+    "/foo"
+  end
+end
+```
+
+[after_sign_in_path_for]: https://github.com/heartcombo/devise/wiki/How-To:-Redirect-back-to-current-page-after-sign-in,-sign-out,-sign-up,-update
+
+If you need more complex behavior, you can always write a custom sessions controller:
+
+```ruby
+# app/controllers/custom_sessions_controller.rb
+class CustomSessionsController < Devise::Passwordless::SessionsController
+  def create
+    # your custom logic
+  end
+end
+
+# config/routes.rb
+Rails.application.routes.draw do
+  devise_for :users,
+    controllers: { sessions: "custom_sessions" }
+end
+```
+
 ## Tokenizers
 
 The algorithm used to encode and decode tokens can be fully customized and swapped

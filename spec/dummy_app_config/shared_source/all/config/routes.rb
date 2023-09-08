@@ -20,6 +20,14 @@ Rails.application.routes.draw do
     get "foo", to: ->(env) { [200, {}, ["foo"]] }
     get "bar", to: ->(env) { [200, {}, ["bar"]] }
   end
+  # Set up a namespace for testing custom after_magic_link_sent_path_for
+  namespace "test_custom_after_magic_link_sent_redirect" do
+    devise_for :passwordless_users,
+      controllers: {
+        sessions: "after_magic_link_sent_sessions"
+      }
+    get "baz", to: ->(env) { [200, {}, ["baz"]] }
+  end
 
   root to: "welcome#index"
 end

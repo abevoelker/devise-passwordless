@@ -77,52 +77,33 @@ Rails.application.routes.draw do
 end
 ```
 
-Finally, you'll want to update Devise's generated views to remove references to passwords, since you don't need them anymore!
+Finally, we need to update Devise's views to remove references to passwords. We will assume you're using the standard Devise views for all your registrations and logins; if you need to support multiple Devise models, some with passwordless login and some with password login, then jump down to the [multiple users section below](#multiple-user-resource-types).
 
-These files/directories can be deleted entirely:
+First, ensure you have Devise views generated for your project under `app/views/devise`. If not, you can generate them with:
 
 ```
-app/views/devise/passwords
-app/views/devise/mailer/password_change.html.erb
-app/views/devise/mailer/reset_password_instructions.html.erb
+rails generate devise:views
 ```
 
-And these should be edited to remove password references:
+Then, delete these files and directories:
 
-* `app/views/devise/registrations/new.html.erb`
+```
+rm -rf app/views/devise/passwords
+rm -f app/views/devise/mailer/password_change.html.erb
+rm -f app/views/devise/mailer/reset_password_instructions.html.erb
+```
+
+Then, edit these files to remove password references:
+
+* app/views/devise/registrations/new.html.erb
   * Delete fields `:password` and `:password_confirmation`
-* `app/views/devise/registrations/edit.html.erb`
+* app/views/devise/registrations/edit.html.erb
   * Delete fields `:password`, `:password_confirmation`, `:current_password`
-* `app/views/devise/sessions/new.html.erb`
+* app/views/devise/sessions/new.html.erb
   * Delete field `:password`
 
-#### Manually creating and sending magic links
-
-You can generate a magic link token like so:
-
-```ruby
-user = User.last
-# see the tokenizer's #encode method for all supported keyword options
-token = user.encode_passwordless_token(expires_at: 2.hours.from_now)
-```
-
-To generate a full magic link URL, use this URL view helper:
-
-```ruby
-user_magic_link_url(
-  user: {
-    email: user.email,
-    token: token,
-    remember_me: true
-  }
-)
-```
-
-This only generates a magic link. If you need to send an email, you can use this method:
-
-```ruby
-user.send_magic_link(remember_me: true, subject: "Custom email subject")
-```
+That's it! 🎉 Now check out the customization section so that you
+may change the default configuration to better match your needs.
 
 ## Customization
 
@@ -197,19 +178,51 @@ en:
 
 To customize the magic link email body, edit `app/views/devise/mailer/magic_link.html.erb`
 
-To customise email headers (including the email subject as well as more unusual headers like `X-Entity-Ref-ID`) pass them in a hash to `resource.send_magic_link` in `SessionsController`, eg. `resource.send_magic_link(create_params[:remember_me], subject: "Your login link has arrived!")`.
+## Manually creating and sending magic links
 
-### Redirecting after magic link is sent
+Magic links are created and sent normally using Devise's views for sign-in and registration, but you can create them manually as well.
 
-After a magic link is sent, the user will be redirected. By default, the location is
-chosen based on these values, in order:
+To send a magic link email, do this:
+
+```ruby
+user = User.last
+user.send_magic_link
+# additional options are passed through to Devise's mailer logic
+user.send_magic_link(remember_me: true, subject: "Custom email subject", "X-Entity-Ref-ID": SecureRandom.uuid)
+```
+
+If you only need to generate the token portion of a magic link, you can do this:
+
+```ruby
+# see the tokenizer's #encode method for all supported keyword options
+token = user.encode_passwordless_token(expires_at: 2.hours.from_now)
+```
+
+Or, to generate the full magic link URL, use this URL view helper:
+
+```ruby
+user_magic_link_url(
+  user: {
+    email: user.email,
+    token: token,
+    remember_me: true
+  }
+)
+```
+
+## Redirecting after magic link is sent
+
+After a user enters their email on the sign-in page, and a magic link is sent, the user
+will be redirected to a new location. By default, that location is selected by checking
+these values, in order:
 
 1. `session["#{resource/scope}_return_to"]` session key (e.g. `session["user_return_to"]`)
 2. `:#{resource/scope}_root` route (e.g. `:user_root`)
-3. Otherwise, use the global `:root` route
+3. The global `:root` route
 
-To customize the redirect, you can write a custom `after_magic_link_sent_path_for` helper,
-similar to [how Devise's `after_sign_in_path_for` helper works][after_sign_in_path_for]:
+To override that behavior and provide the redirect location directly, you can write a
+custom `after_magic_link_sent_path_for` helper, similar to
+[how Devise's `after_sign_in_path_for` helper works][after_sign_in_path_for]:
 
 ```ruby
 class ApplicationController < ActionController::Base

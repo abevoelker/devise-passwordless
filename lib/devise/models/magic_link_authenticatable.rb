@@ -18,9 +18,9 @@ module Devise
         self.class.passwordless_tokenizer_class.encode(self, *args, **kwargs)
       end
 
-      def send_magic_link(remember_me, opts = {})
+      def send_magic_link(remember_me: false, **kwargs)
         token = self.encode_passwordless_token
-        send_devise_notification(:magic_link, token, remember_me, opts)
+        send_devise_notification(:magic_link, token, remember_me, **kwargs)
       end
 
       # A callback initiated after successfully authenticating. This can be

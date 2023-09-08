@@ -38,6 +38,17 @@ to have a successful upgrade:
     ```ruby
     magic_link_url(@resource, @scope_name => {email: @resource.email, token: @token, remember_me: @remember_me})
     ```
+  * The routes are no longer pluralized, so change any references like:
+
+    ```ruby
+    users_magic_link_url
+    ```
+
+    to:
+
+    ```ruby
+    user_magic_link_url
+    ```
 
 * `Devise::Passwordless::LoginToken` is deprecated.
   * Calls to `::encode` and `::decode` should be replaced with calls to these
@@ -50,3 +61,17 @@ to have a successful upgrade:
   * If your Rails app uses Hotwire / Turbo, make sure you're using Devise >= 4.9
     and setting the `config.responder` value in your Devise configuration
     (see Devise Turbo upgrade guide: https://github.com/heartcombo/devise/wiki/How-To:-Upgrade-to-Devise-4.9.0-%5BHotwire-Turbo-integration%5D)
+
+* Resource `#send_magic_link` now uses keyword arguments instead of positional arguments.
+  * Change any instances of
+
+    ```ruby
+    remember_me = true
+    user.send_magic_link(remember_me, subject: "Custom email subject")
+    ```
+
+    to:
+
+    ```ruby
+    user.send_magic_link(remember_me: true, subject: "Custom email subject")
+    ```

@@ -98,6 +98,21 @@ RSpec.describe Devise::Passwordless::SignedGlobalIDTokenizer do
             end
           end
         end
+
+        context "passing expires_at" do
+          it "raises InvalidOrExpiredTokenError if token is expired" do
+            start = Time.utc(2023, 1, 1)
+            token = Timecop.freeze(start) do
+              described_class.encode(user, expires_at: start + 5.minutes)
+            end
+            Timecop.freeze(start + 4.minutes) do
+              expect{described_class.decode(token, user_class)}.not_to raise_error(Devise::Passwordless::InvalidOrExpiredTokenError)
+            end
+            Timecop.freeze(start + 6.minutes) do
+              expect{described_class.decode(token, user_class)}.to raise_error(Devise::Passwordless::InvalidOrExpiredTokenError)
+            end
+          end
+        end
       end
     end
 

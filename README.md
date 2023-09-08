@@ -75,34 +75,33 @@ And these should be edited to remove password references:
 * `app/views/devise/sessions/new.html.erb`
   * Delete field `:password`
 
-#### Manually sending magic links
+#### Manually creating and sending magic links
 
-You can very easily send a magic link at any point like so:
+You can generate a magic link token like so:
 
 ```ruby
-remember_me = true
-User.last.send_magic_link(remember_me)
+user = User.last
+# see the tokenizer's #encode method for all supported keyword options
+token = user.encode_passwordless_token(expires_at: 2.hours.from_now)
 ```
 
-#### Generate links with custom expiration time
-
-You can generate magic link with a custom expiration time like so:
+To generate a full magic link URL, use this URL view helper:
 
 ```ruby
-expiration_time = 2.days.from_now # Or what ever your need
-token = Devise::Passwordless::LoginToken.encode(user, expires_at: expiration_time)
-remember_me = true # Or `false`, as per your need
-
-users_magic_link_url(
+user_magic_link_url(
   user: {
     email: user.email,
     token: token,
-    remember_me: remember_me
+    remember_me: true
   }
 )
 ```
 
-This only generates the magic link. You will have to send an email manually.
+This only generates a magic link. If you need to send an email, you can use this method:
+
+```ruby
+user.send_magic_link(remember_me: true, subject: "Custom email subject")
+```
 
 ## Customization
 

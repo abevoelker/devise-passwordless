@@ -40,8 +40,7 @@ module Devise::Passwordless
         raise InvalidTokenError
       end
 
-      expiration_time = decrypted_data["expires_at"]
-      if expiration_time.nil?
+      unless (expiration_time = decrypted_data["expires_at"])
         created_at = ActiveSupport::TimeZone["UTC"].at(decrypted_data["created_at"])
         expiration_time = (created_at + expire_duration).to_f
       end

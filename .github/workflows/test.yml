@@ -20,6 +20,7 @@ jobs:
           - 2.6
           - 2.5
         rails-version:
+          # - "edge"
           - 7
           - 6.1
           - "6.0"

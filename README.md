@@ -23,7 +23,7 @@ To try out the v1.0 / master build early, use this gem source:
 gem "devise-passwordless", github: "abevoelker/devise-passwordless"
 ```
 
-## 1.0 Upgrade
+## 0.x to 1.0 Upgrade
 
 If you're upgrading from 0.x to 1.0, read [the upgrade guide][] for
 a list of changes you'll need to make.
@@ -335,7 +335,7 @@ app/views/users/
 app/views/admins/
 ```
 
-### Notes on other Devise strategies
+## Compatibility with other Devise strategies
 
 If using the `:rememberable` strategy for "remember me" functionality, you'll need to add a `remember_token` column to your resource, as by default that strategy assumes you're using a password auth strategy and relies on comparing the password's salt to validate cookies:
 
@@ -351,7 +351,9 @@ If using the `:confirmable` strategy, you may want to override the default Devis
 
 If you're using Hotwire/Turbo, be sure that you're on Devise >= 4.9 and that you're
 setting the `config.responder` config value in your Devise initializer to appropriate
-values. See the [Devise 4.9 Turbo upgrade guide][] for more info.
+values.
+
+See the [Devise 4.9 Turbo upgrade guide][] for more info.
 
 [Devise 4.9 Turbo upgrade guide]: https://github.com/heartcombo/devise/wiki/How-To:-Upgrade-to-Devise-4.9.0-%5BHotwire-Turbo-integration%5D
 

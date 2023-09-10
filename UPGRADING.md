@@ -16,6 +16,7 @@ to have a successful upgrade:
         to: "devise/passwordless/magic_links#show",
         as: "users_magic_link"
     ```
+* Remove `require 'devise/passwordless/mailer'` line from `config/initializers/devise.rb`
 
 * New Devise config value `passwordless_tokenizer` is required. Check README for
   an explanation of tokenizers.

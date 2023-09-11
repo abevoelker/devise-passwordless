@@ -5,8 +5,9 @@ class Devise::Passwordless::SessionsController < Devise::SessionsController
       set_flash_message!(:notice, :magic_link_sent)
     else
       set_flash_message!(:notice, :not_found_in_database)
-    end  
-    redirect_to(after_magic_link_sent_path_for(resource), status: devise_redirect_status)
+    end
+
+    redirect_to(after_magic_link_sent_path_for(resource_class), status: devise_redirect_status)
   end
 
   protected

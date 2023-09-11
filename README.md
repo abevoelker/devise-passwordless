@@ -213,15 +213,10 @@ user_magic_link_url(
 ## Redirecting after magic link is sent
 
 After a user enters their email on the sign-in page, and a magic link is sent, the user
-will be redirected to a new location. By default, that location is selected by checking
-these values, in order:
+will be redirected back to the `:root` path of the application.
 
-1. `session["#{resource/scope}_return_to"]` session key (e.g. `session["user_return_to"]`)
-2. `:#{resource/scope}_root` route (e.g. `:user_root`)
-3. The global `:root` route
-
-To override that behavior and provide the redirect location directly, you can write a
-custom `after_magic_link_sent_path_for` helper, similar to
+To provide a custom redirect location, you can write a custom
+`after_magic_link_sent_path_for` helper, similar to
 [how Devise's `after_sign_in_path_for` helper works][after_sign_in_path_for]:
 
 ```ruby
@@ -234,7 +229,24 @@ end
 
 [after_sign_in_path_for]: https://github.com/heartcombo/devise/wiki/How-To:-Redirect-back-to-current-page-after-sign-in,-sign-out,-sign-up,-update
 
-If you need more complex behavior, you can always write a custom sessions controller:
+If you need to have different paths for multiple different types of resources,
+you can write something like this:
+
+```
+class ApplicationController < ActionController::Base
+  def after_magic_link_sent_path_for(resource)
+    case resource.class
+    when FooUser
+      happy_path
+    when BarUser
+      sad_path
+    end
+  end
+end
+```
+
+And, if you need more complex behavior, you can always write a custom sessions
+controller for each resource:
 
 ```ruby
 # app/controllers/custom_sessions_controller.rb

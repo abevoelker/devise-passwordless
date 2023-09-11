@@ -13,17 +13,6 @@ class Devise::Passwordless::SessionsController < Devise::SessionsController
 
   protected
 
-  # The path to redirect to after a magic link was sent.
-  def after_magic_link_sent_path_for(resource_or_scope)
-    stored_location = stored_location_for(resource_or_scope)
-    return stored_location if stored_location
-
-    scope = Devise::Mapping.find_scope!(resource_or_scope)
-    router_name = Devise.mappings[scope].router_name
-    context = router_name ? send(router_name) : self
-    context.respond_to?(:root_path) ? context.root_path : "/"
-  end
-
   def translation_scope
     if action_name == "create"
       "devise.passwordless"

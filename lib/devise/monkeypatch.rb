@@ -1,4 +1,5 @@
 # Monkeypatch to allow multiple routes for a single module
+# TODO this should be submitted as a PR to devise to deleted if/when merged
 module Devise
   class Mapping
     def routes
@@ -56,5 +57,26 @@ module Devise
     end
 
     Devise::Mapping.add_module module_name
+  end
+end
+
+# Extend Devise's Helpers module to add our after_magic_link_sent_path_for
+# This is defined here as a helper rather than in the sessions controller
+# directly so that it can be overridden in the main ApplicationController
+module Devise
+  module Controllers
+    module Helpers
+      # Method used by sessions controller to redirect user after a magic link
+      # is sent from the sign in page. You can overwrite it in your
+      # ApplicationController to provide a custom hook for a custom scope.
+      #
+      # By default it is the root_path.
+      def after_magic_link_sent_path_for(resource_or_scope)
+        scope = Devise::Mapping.find_scope!(resource_or_scope)
+        router_name = Devise.mappings[scope].router_name
+        context = router_name ? send(router_name) : self
+        context.respond_to?(:root_path) ? context.root_path : "/"
+      end
+    end
   end
 end

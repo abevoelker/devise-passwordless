@@ -1,12 +1,44 @@
 ## Upgrading from 0.x to 1.0
 
-This is a big release that cleans up the DX quite a bit! 🎉 Make these changes
+⭐ The 1.0 release includes significant breaking changes! ⭐
+
+This is a big release that cleans up the DX quite a bit. 🎉 Make these changes
 to have a successful upgrade:
 
-* Generated `SessionsController` is no longer required
-  * Delete `app/controllers/devise/passwordless/sessions_controller.rb`
 * Generated `MagicLinksController` is no longer required
   * Delete `app/controllers/devise/passwordless/magic_links_controller.rb`
+* Generated `SessionsController` is no longer required
+  * If you haven't customized the generated controller in:
+
+    ```
+    app/controllers/devise/passwordless/sessions_controller.rb
+    ```
+
+    then go ahead and delete it!
+  * If you **have** customized the controller, then we're going to move it. Move the file to somewhere like
+
+    ```
+    app/controllers/custom_sessions_controller.rb
+    ```
+
+    And change the inside class definition to match, e.g. from
+
+    ```ruby
+    class Devise::Passwordless::SessionsController < Devise::SessionsController
+    ```
+
+    to
+
+    ```ruby
+    class CustomSessionsController < Devise::Passwordless::SessionsController
+    ```
+
+    Finally, change the route of your resource to match it:
+
+    ```ruby
+    devise_for :users,
+      controllers: { sessions: "custom_sessions" }
+    ```
 * Routing no longer requires custom `devise_scope` for magic links
   * Delete any route declarations from `config/routes.rb` that look like this:
 

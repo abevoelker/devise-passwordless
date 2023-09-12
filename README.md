@@ -232,7 +232,7 @@ end
 If you need to have different paths for multiple different types of resources,
 you can write something like this:
 
-```
+```ruby
 class ApplicationController < ActionController::Base
   def after_magic_link_sent_path_for(resource)
     case resource.class
@@ -265,8 +265,14 @@ end
 
 ## Tokenizers
 
-The algorithm used to encode and decode tokens can be fully customized and swapped
-out on a per-model basis.
+Tokenizers handle encoding and decoding of magic link tokens. There are multiple
+pre-built ones to choose from, or [you can write your own](#your-own-custom-tokenizer).
+
+Set the default tokenizer in your Devise initializer (`config.passwordless_tokenizer`),
+which will be the global default. If you want a model to have a different tokenizer
+than the default, you can define a class method `::passwordless_tokenizer` on your
+model and that will be used instead. Models can have different tokenizers from
+each other in this way.
 
 ### SignedGlobalIDTokenizer
 

@@ -445,7 +445,12 @@ end
 
 ## Rails logs security
 
-Default logging behavior in Rails can cause plaintext magic link tokens to leak into log files:
+Rails's default configuration filters `:token` parameters out of request logs (and
+`Devise::Passwordless` will issue a warning if it detects the configuration doesn't). So request
+logs shouldn't link magic link tokens.
+
+However, there are some other default Rails logging behaviors that may cause plaintext magic
+link tokens to leak into log files:
 
 1. Action Mailer logs the entire contents of all outgoing emails to the DEBUG level. Magic link tokens delivered to users in email will be leaked.
 2. Active Job logs all arguments to every enqueued job at the INFO level. If you configure Devise to use `deliver_later` to send passwordless emails, magic link tokens will be leaked.
@@ -456,7 +461,7 @@ Rails sets the production logger level to INFO by default. Consider changing you
 config.log_level = :warn
 ```
 
-(Adapted from the [Devise guide on password reset tokens][], which this section also applies to)
+(Partially adapted from the [Devise guide on password reset tokens][], which this section also applies to)
 
 [Devise guide on password reset tokens]: https://github.com/heartcombo/devise/blob/main/README.md#password-reset-tokens-and-rails-logs
 

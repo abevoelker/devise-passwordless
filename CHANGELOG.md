@@ -13,6 +13,7 @@
 * `magic_link_(path|url)` view helpers are now implemented for all resources (cleans up mailer view template)
 * Tokenizer encoding now supports `:expires_at` option (#19, #21 - thanks @JoeyLeadJig and @bvsatyaram!)
 * Users will be redirected after magic link is sent (customized using `after_magic_link_sent_path_for`)
+* A warning will be logged if Rails's `filter_parameters` doesn't filter `:token`s from request logs
 
 ### Bugfixes
 

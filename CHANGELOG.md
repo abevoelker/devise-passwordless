@@ -4,7 +4,7 @@
 
 * Tokenization encoding/decoding is now fully customizable
 * Tokenizer encoding now supports extra metadata ([#27][] - thanks [@fastjames][] and [@elucid][]!)
-* Tokenizer encoding now supports `:expires_at` option ([#19], [#21] - thanks [@JoeyLeadJig] and [@bvsatyaram]!)
+* Tokenizer encoding now supports `:expires_at` option ([#19], [#21] - thanks [@joeyparis] / [@JoeyLeadJig] and [@bvsatyaram]!)
 * Turbo is now properly supported ([#23], [#33] - thanks [@iainbeeston] and [@til]!)
 * Signed GlobalID tokenization supported ([#22])
 * More thorough integration testing using a dummy Rails app
@@ -26,6 +26,7 @@
 [@fastjames]: https://github.com/fastjames
 [@elucid]: https://github.com/elucid
 [@iainbeeston]: https://github.com/iainbeeston
+[@joeyparis]: https://github.com/joeyparis
 [@JoeyLeadJig]: https://github.com/JoeyLeadJig
 [@til]: https://github.com/til
 

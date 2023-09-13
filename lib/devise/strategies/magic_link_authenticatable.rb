@@ -9,7 +9,7 @@ module Devise
     class MagicLinkAuthenticatable < Authenticatable
       #undef :password
       #undef :password=
-      attr_accessor :token
+      attr_accessor :token, :email
 
       def valid_for_http_auth?
         super && http_auth_hash[:token].present?
@@ -23,7 +23,7 @@ module Devise
         resource_class = mapping.to
 
         begin
-          resource, extra = resource_class.decode_passwordless_token(token, resource_class)
+          resource, extra = resource_class.decode_passwordless_token(token, resource_class, email: email)
         rescue Devise::Passwordless::InvalidOrExpiredTokenError
           fail!(:magic_link_invalid)
           return
@@ -31,7 +31,7 @@ module Devise
 
         if validate(resource)
           remember_me(resource)
-          resource.after_magic_link_authentication
+          resource.after_magic_link_authentication(token)
           env['warden.magic_link_extra'] = extra.fetch('data', {}).delete('extra')
           success!(resource)
         else
@@ -45,6 +45,7 @@ module Devise
       def with_authentication_hash(auth_type, auth_values)
         self.authentication_hash, self.authentication_type = {}, auth_type
         self.token = auth_values[:token]
+        self.email = auth_values[:email]
 
         parse_authentication_key_values(auth_values, authentication_keys) &&
         parse_authentication_key_values(request_values, request_keys)

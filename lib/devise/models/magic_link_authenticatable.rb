@@ -33,7 +33,11 @@ module Devise
       #     self.update_attribute(:invite_code, nil)
       #   end
       #
-      def after_magic_link_authentication
+      def after_magic_link_authentication(token)
+        # TODO add callback to new database column strategy
+        if self.class.passwordless_tokenizer_class.respond_to?(:after_magic_link_authentication)
+          self.class.passwordless_tokenizer_class.after_magic_link_authentication(self, token)
+        end
       end
 
       protected

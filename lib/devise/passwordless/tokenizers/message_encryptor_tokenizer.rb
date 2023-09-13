@@ -22,7 +22,7 @@ module Devise::Passwordless
       "#{salt_base64}:#{encrypted_data}"
     end
 
-    def self.decode(token, resource_class, as_of: Time.current, expire_duration: Devise.passwordless_login_within)
+    def self.decode(token, resource_class, as_of: Time.current, expire_duration: Devise.passwordless_login_within, **kwargs)
       raise InvalidTokenError if token.blank?
       salt_base64, encrypted_data = token.split(":")
       raise InvalidTokenError if salt_base64.blank? || encrypted_data.blank?

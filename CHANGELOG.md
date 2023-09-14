@@ -3,10 +3,11 @@
 ### Enhancements
 
 * Tokenization encoding/decoding is now fully customizable
-* Tokenizer encoding now supports extra metadata ([#27][] - thanks [@fastjames][] and [@elucid][]!)
+* Tokenizer encoding now supports extra metadata ([#27] - thanks [@fastjames] and [@elucid]!)
 * Tokenizer encoding now supports `:expires_at` option ([#19], [#21] - thanks [@joeyparis] / [@JoeyLeadJig] and [@bvsatyaram]!)
 * Turbo is now properly supported ([#23], [#33] - thanks [@iainbeeston] and [@til]!)
 * Signed GlobalID tokenization supported ([#22])
+* Concurrent use of password auth (`:database_authenticatable` strategy) now supported ([#13] - thanks [@fschwahn]!)
 * More thorough integration testing using a dummy Rails app
 * Added a Rails engine to solve loading issues and tidy up file structuring
 * `Passwordless::SessionsController` now uses gem source instead of needing to be generated from a template
@@ -24,12 +25,14 @@
 
 [@bvsatyaram]: https://github.com/bvsatyaram
 [@fastjames]: https://github.com/fastjames
+[@fschwahn]: https://github.com/fschwahn
 [@elucid]: https://github.com/elucid
 [@iainbeeston]: https://github.com/iainbeeston
 [@joeyparis]: https://github.com/joeyparis
 [@JoeyLeadJig]: https://github.com/JoeyLeadJig
 [@til]: https://github.com/til
 
+[#13]: https://github.com/abevoelker/devise-passwordless/issues/13
 [#19]: https://github.com/abevoelker/devise-passwordless/pull/19
 [#21]: https://github.com/abevoelker/devise-passwordless/pull/21
 [#22]: https://github.com/abevoelker/devise-passwordless/issues/22

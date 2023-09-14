@@ -6,6 +6,7 @@ A passwordless a.k.a. "magic link" login strategy for [Devise][]
 
 * No database changes needed - magic links are stateless tokens
 * [Choose your token encoding algorithm or easily write your own](#tokenizers)
+* [Can be combined with traditional password authentication in the same model](#combining-password-and-passwordless-auth-in-the-same-model)
 * [Supports multiple user (resource) types](#multiple-user-resource-types)
 * All the goodness of Devise!
 
@@ -403,6 +404,122 @@ Which will generate the whole set of Devise views under these paths:
 ```
 app/views/users/
 app/views/admins/
+```
+
+## Combining password and passwordless auth in the same model
+
+It is possible to use both traditional password authentication (i.e. the
+`:database_authenticatable` strategy) alongside magic link authentication in
+the same model:
+
+```ruby
+# app/models/user.rb
+class User < ApplicationRecord
+  devise :database_authenticatable, :magic_link_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
+end
+```
+
+How you end up implementing it will be highly dependent on your use case. By
+default, all password validations will still run - so on registration, users
+will have to provide passwords - but they'll be able to log in via either
+password OR magic link (you'll have to customize your routes and views to
+make the separate paths accessible).
+
+Here's an example routes file of that scenario (a separate namespace is
+needed because the password vs. passwordless paths use different sessions
+controllers):
+
+```ruby
+devise_for :users
+namespace "passwordless" do
+  devise_for :users,
+    controllers: { sessions: "devise/passwordless/sessions" }
+end
+```
+
+Visiting `/users/sign_in` will lead to a password sign in, while
+`/passwordless/users/sign_in` will lead to the magic link sign in flow
+(you'll need to [generate the necessary Devise views](#scoped-views)
+to support the different sign-in forms).
+
+### Disabling password authentication or magic link authentication
+
+Rather than *all* your users having access to *both* authentication methods,
+it may be the case that you want *some* users to use magic links, *some*
+to use passwords, or some combination between the two.
+
+This can be managed by defining some methods that disable the relevant
+authentication strategy and determine the failure message. Here are
+examples for both:
+
+### Disabling password authentication
+
+Let's say you want to disable password authentication for everyone except
+people named Bob:
+
+```ruby
+class User < ApplicationRecord
+  # devise :database_authenticatable, :magic_link_authenticatable, ...
+
+  def first_name_bob?
+    self.first_name.downcase == "bob"
+  end
+
+  # The `super` is important in the following two methods as other
+  # auth strategies chain onto these methods:
+
+  def active_for_authentication?
+    super && first_name_bob?
+  end
+
+  def inactive_message
+    first_name_bob? ? super : :first_name_not_bob
+  end
+end
+```
+
+Then, you add this to your `devise.yml` to customize the error message:
+
+```yaml
+devise:
+  failure:
+    first_name_not_bob: "Sorry, only Bobs may log in using their password. Try magic link login instead."
+```
+
+Now, when users not named Bob try to log in with their password, it'll fail with
+your custom failure message.
+
+### Disabling passwordless / magic link authentication
+
+Disabling magic link authentication is a similar process, just with different
+method names:
+
+```ruby
+class User < ApplicationRecord
+  # devise :database_authenticatable, :magic_link_authenticatable, ...
+
+  def first_name_alice?
+    self.first_name.downcase == "alice"
+  end
+
+  # The `super` is actually not important at the moment for these, but if
+  # any future Devise strategies were to extend this one, they will be.
+
+  def active_for_magic_link_authentication?
+    super && first_name_alice?
+  end
+
+  def magic_link_inactive_message
+    first_name_alice? ? super : :first_name_not_alice_magic_link
+  end
+end
+```
+
+```yaml
+devise:
+  failure:
+    first_name_not_alice_magic_link: "Sorry, only Alices may log in using magic links. Try password login instead."
 ```
 
 ## Compatibility with other Devise strategies

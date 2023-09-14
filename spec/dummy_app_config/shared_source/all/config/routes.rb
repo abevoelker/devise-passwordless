@@ -31,5 +31,14 @@ Rails.application.routes.draw do
   end
   get "custom_after_magic_link_sent", to: ->(env) { [200, {}, ["custom_after_magic_link_sent"]] }
 
+  # Combined users which can behave as either password or passwordless users
+  devise_for :combined_users
+  # Passwordless login gets its own namespace because it uses a separate sessions controller
+  namespace "passwordless" do
+    devise_for :combined_users,
+      #only: [:sessions, :registrations, :passwords],
+      controllers: { sessions: "devise/passwordless/sessions" }
+  end
+
   root to: "welcome#index"
 end

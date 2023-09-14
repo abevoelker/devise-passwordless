@@ -25,3 +25,11 @@
   <span>(not signed in)</span>
 <% end %>
 </p>
+
+<p class="combined_user">CombinedUser:
+<% if current_combined_user %>
+  <span class="email"><%= current_combined_user.email %></span>
+<% else %>
+  <span>(not signed in)</span>
+<% end %>
+</p>

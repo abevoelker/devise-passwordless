@@ -1,4 +1,4 @@
-RSpec.shared_examples "resource sign-in shared examples" do
+RSpec.shared_examples "passwordless resource shared sign-in examples" do
   context "non-existent user" do
     it "displays error message if user's email not in system" do
       visit sign_in_path

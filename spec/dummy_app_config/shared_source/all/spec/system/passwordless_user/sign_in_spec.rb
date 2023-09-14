@@ -1,6 +1,6 @@
 require "rails_helper"
 require "yaml"
-require "system/shared/shared_sign_in_spec"
+require "system/shared/shared_passwordless_sign_in_examples"
 
 RSpec.describe "PasswordlessUser sign in", :type => :system do
   let(:email) { "foo@example.com" }
@@ -39,7 +39,7 @@ RSpec.describe "PasswordlessUser sign in", :type => :system do
       DEVISE_I18N
     )}
 
-    include_examples "resource sign-in shared examples"
+    include_examples "passwordless resource shared sign-in examples"
   end
 
   context "custom sessions controller" do

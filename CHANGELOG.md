@@ -8,6 +8,7 @@
 * Turbo is now properly supported ([#23], [#33] - thanks [@iainbeeston] and [@til]!)
 * Signed GlobalID tokenization supported ([#22])
 * Concurrent use of password auth (`:database_authenticatable` strategy) now supported ([#13] - thanks [@fschwahn]!)
+* `Devise.paranoid` is now respected with new ambiguous messaging i18n option `:magic_link_sent_paranoid` following ([#36] - thanks [@cbldev]!)
 * More thorough integration testing using a dummy Rails app
 * Added a Rails engine to solve loading issues and tidy up file structuring
 * `Passwordless::SessionsController` now uses gem source instead of needing to be generated from a template
@@ -24,6 +25,7 @@
 
 
 [@bvsatyaram]: https://github.com/bvsatyaram
+[@cbldev]: https://github.com/cbldev
 [@fastjames]: https://github.com/fastjames
 [@fschwahn]: https://github.com/fschwahn
 [@elucid]: https://github.com/elucid
@@ -39,3 +41,4 @@
 [#23]: https://github.com/abevoelker/devise-passwordless/pull/23
 [#27]: https://github.com/abevoelker/devise-passwordless/pull/27
 [#33]: https://github.com/abevoelker/devise-passwordless/pull/33
+[#36]: https://github.com/abevoelker/devise-passwordless/pull/36

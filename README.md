@@ -170,12 +170,21 @@ en:
     passwordless:
       not_found_in_database: "Could not find a user for that email address"
       magic_link_sent: "A login link has been sent to your email address. Please follow the link to log in to your account."
+      magic_link_sent_paranoid: "If your account exists, you will receive an email with a login link. Please follow the link to log in to your account."
     failure:
       magic_link_invalid: "Invalid or expired login link."
     mailer:
       magic_link:
         subject: "Here's your magic login link ✨"
 ```
+
+**Note**: If [Devise's paranoid mode][] is enabled in your Devise initializer, the
+`:magic_link_sent_paranoid` message will be used both when a user account exists
+and when it does not exist to prevent account enumeration vulnerabilities. If
+paranoid mode is disabled, then `:magic_link_sent` will be used for existing
+accounts, and `:not_found_in_database` when no account was found.
+
+[Devise's paranoid mode]: https://github.com/heartcombo/devise/wiki/How-To:-Using-paranoid-mode,-avoid-user-enumeration-on-registerable
 
 To customize the magic link email body, edit `app/views/devise/mailer/magic_link.html.erb`
 
@@ -374,9 +383,11 @@ en:
       user:
         not_found_in_database: "Could not find a USER for that email address"
         magic_link_sent: "A USER login link has been sent to your email address. Please follow the link to log in to your account."
+        magic_link_sent_paranoid: "If your USER account exists, you will receive an email with a login link. Please follow the link to log in to your account."
       admin:
         not_found_in_database: "Could not find an ADMIN for that email address"
         magic_link_sent: "An ADMIN login link has been sent to your email address. Please follow the link to log in to your account."
+        magic_link_sent_paranoid: "If your ADMIN account exists, you will receive an email with a login link. Please follow the link to log in to your account."
     failure:
       user:
         magic_link_invalid: "Invalid or expired USER login link."

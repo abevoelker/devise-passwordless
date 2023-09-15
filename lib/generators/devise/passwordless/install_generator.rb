@@ -71,6 +71,7 @@ module Devise::Passwordless
               passwordless: {
                 not_found_in_database: "Could not find a user for that email address",
                 magic_link_sent: "A login link has been sent to your email address. Please follow the link to log in to your account.",
+                magic_link_sent_paranoid: "If your account exists, you will receive an email with a login link. Please follow the link to log in to your account.",
               },
               failure: {
                 magic_link_invalid: "Invalid or expired login link.",

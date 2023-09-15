@@ -14,7 +14,7 @@ to have a successful upgrade:
     app/controllers/devise/passwordless/sessions_controller.rb
     ```
 
-    then go ahead and delete it!
+    then go ahead and delete the file!
   * If you **have** customized the controller, then we're going to move it. Move the file to somewhere like
 
     ```
@@ -33,12 +33,16 @@ to have a successful upgrade:
     class CustomSessionsController < Devise::Passwordless::SessionsController
     ```
 
-    Finally, change the route of your resource to match it:
+    Then, change the route of your resource to match it:
 
     ```ruby
     devise_for :users,
       controllers: { sessions: "custom_sessions" }
     ```
+
+    Finally, you should review the latest source of
+    `Devise::Passwordless::SessionsController` as its implementation has changed,
+    so you'll want to sync up your customizations.
 * Routing no longer requires custom `devise_scope` for magic links
   * Delete any route declarations from `config/routes.rb` that look like this:
 
@@ -48,16 +52,39 @@ to have a successful upgrade:
         to: "devise/passwordless/magic_links#show",
         as: "users_magic_link"
     ```
-* Remove `require 'devise/passwordless/mailer'` line from `config/initializers/devise.rb`
 
-* New Devise config value `passwordless_tokenizer` is required. Check README for
-  an explanation of tokenizers.
-  * Add this section to `config/initializers/devise.rb`:
-
-    ```ruby
-    # Which algorithm to use for tokenizing magic links. See README for descriptions
-    config.passwordless_tokenizer = "MessageEncryptorTokenizer"
+* Changes are required to the Devise initializer in `config/initializers/devise.rb`:
+  * Delete this line:
     ```
+    require 'devise/passwordless/mailer'
+    ```
+  * New config value `passwordless_tokenizer` is required. Check README for
+    an explanation of tokenizers.
+    * Add this section to `config/initializers/devise.rb`:
+
+      ```ruby
+      # Which algorithm to use for tokenizing magic links. See README for descriptions
+      config.passwordless_tokenizer = "MessageEncryptorTokenizer"
+      ```
+
+* There is a new `:magic_link_sent_paranoid` i18n key you should add to your `config/locales/devise.en.yml` file:
+
+    ```diff
+    @@ -58,6 +58,7 @@
+        passwordless:
+          not_found_in_database: "Could not find a user for that email address"
+          magic_link_sent: "A login link has been sent to your email address. Please follow the link to log in to your account."
+    +      magic_link_sent_paranoid: "If your account exists, you will receive an email with a login link. Please follow the link to log in to your account."
+      errors:
+        messages:
+          already_confirmed: "was already confirmed, please try signing in"
+
+    ```
+  * If Devise's paranoid mode is enabled in your Devise initializer, this new key
+    replaces the use of both `:magic_link_sent` and `:not_found_in_database` to be
+    ambiguous about the existence of user accounts to prevent account enumeration
+    vulnerabilities. If you want the old behavior back, ensure `Devise.paranoid`
+    is `false` by setting `config.paranoid = false` in your Devise initializer.
 
 * `magic_link` path and URL helpers now work
   * Delete any code that looks like this:

@@ -28,12 +28,14 @@ RSpec.describe "PasswordlessConfirmableUser sign in", :type => :system do
       devise:
         passwordless:
           magic_link_sent: "Custom magic link sent message"
+          magic_link_sent_paranoid: "Custom paranoid message"
+          not_found_in_database: "Custom not found in database message"
         mailer:
           magic_link:
             subject: "Custom magic link message"
       DEVISE_I18N
     )}
-    let(:yaml_specific) { YAML.load(
+    let(:yaml_scoped) { YAML.load(
       <<~DEVISE_I18N
       devise:
         passwordless:
@@ -41,6 +43,8 @@ RSpec.describe "PasswordlessConfirmableUser sign in", :type => :system do
             magic_link_sent: "YYY"
           passwordless_confirmable_user:
             magic_link_sent: "Custom magic link sent message"
+            magic_link_sent_paranoid: "Custom paranoid message"
+            not_found_in_database: "Custom not found in database message"
           magic_link_sent: "XXX"
         mailer:
           magic_link:

@@ -1,9 +1,10 @@
 # Devise::Passwordless
 
-A passwordless a.k.a. "magic link" login strategy for [Devise][]
+A passwordless login strategy for [Devise] using emailed magic links
 
 ## Features
 
+* No passwords - users receive magic link emails to register / sign-in
 * No database changes needed - magic links are stateless tokens
 * [Choose your token encoding algorithm or easily write your own](#tokenizers)
 * [Can be combined with traditional password authentication in the same model](#combining-password-and-passwordless-auth-in-the-same-model)

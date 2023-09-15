@@ -11,21 +11,9 @@ A passwordless login strategy for [Devise] using emailed magic links
 * [Supports multiple user (resource) types](#multiple-user-resource-types)
 * All the goodness of Devise!
 
-## Documentation
-
-If you're reading this at https://github.com/abevoelker/devise-passwordless you are
-reading documentation for the `master` / v1.0 build, which is not yet released. See
-[the v0.7.1 tag][] for documentation on the most recent gem release.
-
-[the v0.7.1 tag]: https://github.com/abevoelker/devise-passwordless/tree/v0.7.1
-
-To try out the v1.0 / master build early, use this gem source:
-
-```ruby
-gem "devise-passwordless", github: "abevoelker/devise-passwordless"
-```
-
 ## 0.x to 1.0 Upgrade
+
+⭐ The 1.0 release includes significant breaking changes! ⭐
 
 If you're upgrading from 0.x to 1.0, read [the upgrade guide][] for
 a list of changes you'll need to make.

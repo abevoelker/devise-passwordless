@@ -1,4 +1,10 @@
-## 1.0.0
+## 1.0.1 - Sep 18, 2023
+
+### Bugfixes
+
+* Fixed bug where `filter_parameters` check erred on regex keys ([#39] - thanks [@thimo]!)
+
+## 1.0.0 - Sep 15, 2023
 
 ### Enhancements
 
@@ -32,6 +38,7 @@
 [@iainbeeston]: https://github.com/iainbeeston
 [@joeyparis]: https://github.com/joeyparis
 [@JoeyLeadJig]: https://github.com/JoeyLeadJig
+[@thimo]: https://github.com/thimo
 [@til]: https://github.com/til
 
 [#13]: https://github.com/abevoelker/devise-passwordless/issues/13
@@ -42,3 +49,4 @@
 [#27]: https://github.com/abevoelker/devise-passwordless/pull/27
 [#33]: https://github.com/abevoelker/devise-passwordless/pull/33
 [#36]: https://github.com/abevoelker/devise-passwordless/pull/36
+[#39]: https://github.com/abevoelker/devise-passwordless/issues/39

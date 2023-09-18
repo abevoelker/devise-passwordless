@@ -23,5 +23,21 @@ module Devise
         Devise.secret_key
       end
     end
+
+    FILTER_PARAMS_WARNING = "[DEVISE-PASSWORDLESS] We have detected that your Rails configuration does not " \
+                            "filter :token parameters out of your logs. You should append :token to your " \
+                            "config.filter_parameters Rails setting so that magic link tokens don't " \
+                            "leak out of your logs."
+
+    def self.check_filter_parameters(params)
+      begin
+        unless params.find{|p| p.to_sym == :token}
+          warn FILTER_PARAMS_WARNING
+        end
+      # Cancel the check if filter_parameters contains regular expressions or other exotic values
+      rescue NoMethodError
+        return
+      end
+    end
   end
 end

@@ -233,12 +233,12 @@ you can write something like this:
 
 ```ruby
 class ApplicationController < ActionController::Base
-  def after_magic_link_sent_path_for(resource)
-    case resource.class
-    when FooUser
-      happy_path
-    when BarUser
-      sad_path
+  def after_magic_link_sent_path_for(resource_or_scope)
+    case Devise::Mapping.find_scope!(resource_or_scope)
+    when :user
+      some_path
+    when :admin
+      some_other_path
     end
   end
 end

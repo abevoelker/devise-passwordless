@@ -328,8 +328,9 @@ Devise.setup do |config|
   # generate your own secret value with e.g. `rake secret`
   # config.passwordless_secret_key = nil
 
-  # When using the :trackable module, set to true to consider magic link tokens
-  # generated before the user's current sign in time to be expired. In other words,
-  # each time you sign in, all existing magic links will be considered invalid.
+  # When using the :trackable module and MessageEncryptorTokenizer, set to true to
+  # consider magic link tokens generated before the user's current sign in time to
+  # be expired. In other words, each time you sign in, all existing magic links
+  # will be considered invalid.
   # config.passwordless_expire_old_tokens_on_sign_in = false
 end

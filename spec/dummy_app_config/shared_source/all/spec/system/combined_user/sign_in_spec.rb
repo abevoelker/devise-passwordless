@@ -14,18 +14,40 @@ RSpec.describe "CombinedUser sign in", :type => :system do
 
     it "successfully logs in combined user using password" do
       visit "/combined_users/sign_in"
-  
+
       expect(page.status_code).to be(200)
       expect(page).to have_css("h2", text: "Log in")
-  
+
       fill_in "Email", with: user.email
       fill_in "Password", with: password
       click_button "Log in"
-  
+
       # It successfully logs in
       expect(page).to have_css("h2", text: "Sign-in status")
       expect(page).to have_css("p.combined_user span.email", text: user.email)
     end
+
+    context "with magic-link authentication disabled" do
+      before do
+        allow_any_instance_of(CombinedUser).to receive(:active_for_magic_link_authentication?).and_return(false)
+      end
+
+      it "successfully logs in combined user using password even with magic-link disabled" do
+        visit "/combined_users/sign_in"
+
+        expect(page.status_code).to be(200)
+        expect(page).to have_css("h2", text: "Log in")
+
+        fill_in "Email", with: user.email
+        fill_in "Password", with: password
+        click_button "Log in"
+
+        # It successfully logs in
+        expect(page).to have_css("h2", text: "Sign-in status")
+        expect(page).to have_css("p.combined_user span.email", text: user.email)
+      end
+    end
+
 
     context "with password authentication disabled" do
       before do
@@ -47,14 +69,14 @@ RSpec.describe "CombinedUser sign in", :type => :system do
 
       it "fails password sign-in with custom error message" do
         visit sign_in_path
-    
+
         expect(page.status_code).to be(200)
         expect(page).to have_css("h2", text: "Log in")
-    
+
         fill_in "Email", with: user.email
         fill_in "Password", with: password
         click_button "Log in"
-    
+
         # Sign in fails with custom error message
         expect(page).to have_css("h2", text: "Log in")
         expect(page).to have_css("p.alert", text: "Password logins have been disabled. Use magic links instead.")
@@ -110,10 +132,10 @@ RSpec.describe "CombinedUser sign in", :type => :system do
       context "default error message" do
         it "sends magic link, but visiting magic link fails sign-in with default error message" do
           visit sign_in_path
-      
+
           expect(page.status_code).to be(200)
           expect(page).to have_css("h2", text: "Log in")
-      
+
           fill_in "Email", with: user.email
           click_button "Log in"
 
@@ -130,7 +152,7 @@ RSpec.describe "CombinedUser sign in", :type => :system do
           html = Nokogiri::HTML(mail.body.decoded)
           magic_link = html.css("a")[0].values[0]
           visit magic_link
-      
+
           # Sign in fails with custom error message
           expect(page).to have_css("h2", text: "Log in")
           expect(page).to have_css("p.alert", text: "Invalid or expired login link.")
@@ -159,10 +181,10 @@ RSpec.describe "CombinedUser sign in", :type => :system do
 
           it "sends magic link, but visiting magic link fails sign-in with custom error message" do
             visit sign_in_path
-        
+
             expect(page.status_code).to be(200)
             expect(page).to have_css("h2", text: "Log in")
-        
+
             fill_in "Email", with: user.email
             click_button "Log in"
 
@@ -179,7 +201,7 @@ RSpec.describe "CombinedUser sign in", :type => :system do
             html = Nokogiri::HTML(mail.body.decoded)
             magic_link = html.css("a")[0].values[0]
             visit magic_link
-        
+
             # Sign in fails with custom error message
             expect(page).to have_css("h2", text: "Log in")
             expect(page).to have_css("p.alert", text: "Passwordless / magic link logins have been disabled. Use your password instead.")
@@ -200,10 +222,10 @@ RSpec.describe "CombinedUser sign in", :type => :system do
 
           it "sends magic link, but visiting magic link fails sign-in with custom error message" do
             visit sign_in_path
-        
+
             expect(page.status_code).to be(200)
             expect(page).to have_css("h2", text: "Log in")
-        
+
             fill_in "Email", with: user.email
             click_button "Log in"
 
@@ -220,7 +242,7 @@ RSpec.describe "CombinedUser sign in", :type => :system do
             html = Nokogiri::HTML(mail.body.decoded)
             magic_link = html.css("a")[0].values[0]
             visit magic_link
-        
+
             # Sign in fails with custom error message
             expect(page).to have_css("h2", text: "Log in")
             expect(page).to have_css("p.alert", text: "Passwordless / magic link logins have been disabled. Use your password instead.")

@@ -37,12 +37,12 @@ jobs:
           - ruby-version: 3.2
             rails-version: "6.0"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Ruby ${{ matrix.ruby-version }}
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
       - name: Install Yarn
@@ -60,6 +60,16 @@ jobs:
           bundle config set --local path '/tmp/system-tests'
           BUNDLE_GEMFILE=$RAILS_NEW_GEMFILE bundle
           rails new dummy_app --database=sqlite3 --skip-active-storage --skip-action-cable --skip-spring --skip-listen --skip-test
+
+          # XXX VERY DUMB workaround for Rails 7's "rails new" default Gemfile not working with Ruby 2.7
+          # e.g. https://github.com/abevoelker/devise-passwordless/actions/runs/8132843679/job/22223730812#step:7:292
+          # SUPPOSEDLY Rails 7 supports Ruby 2.7 but the "debug" gem dependency pulls in a "sqlite3" version which is
+          # incompatible with Ruby 2.7
+          if [[ "${{ matrix.ruby-version }}" == "2.7" && "${{ matrix.rails-version }}" == "7" ]]; then
+            sed -i '/^gem.*sqlite3/d' dummy_app/Gemfile
+            echo -e "\ngem 'sqlite3', '~> 1.6.0', '>= 1.6.9'\n" >> dummy_app/Gemfile
+          fi
+
           cat dummy_app_config/Gemfile.append >> dummy_app/Gemfile
           cd dummy_app
           bundle

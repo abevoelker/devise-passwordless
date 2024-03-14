@@ -6,5 +6,7 @@ group :development, :test do
   gem 'selenium-webdriver'
 end
 
-gem "devise"
+# We put devise-passwordless first, to test that adding after_magic_link_sent_path_for
+# to the controllers works in every order.
 gem "devise-passwordless", :path => "../../../"
+gem "devise"

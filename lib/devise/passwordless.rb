@@ -1,3 +1,4 @@
+require "devise"
 require "devise/passwordless/version"
 require "devise/monkeypatch"
 require "devise/passwordless/rails" if defined?(Rails::Engine)

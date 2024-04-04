@@ -1,6 +1,6 @@
 class Devise::Passwordless::SessionsController < Devise::SessionsController
   def create
-    if (self.resource = resource_class.find_by(email: create_params[:email]))
+    if (self.resource = resource_class.find_for_authentication(email: create_params[:email]))
       resource.send_magic_link(remember_me: create_params[:remember_me])
       if Devise.paranoid
         set_flash_message!(:notice, :magic_link_sent_paranoid)

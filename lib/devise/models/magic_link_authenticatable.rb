@@ -6,26 +6,29 @@ module Devise
     module MagicLinkAuthenticatable
       extend ActiveSupport::Concern
 
-      # Models using the :database_authenticatable strategy will already
-      # have #password_required? and #password defined - we will defer
-      # to those methods if they already exist so that people can use
-      # both strategies together. Otherwise, for :magic_link_authenticatable-
-      # only users, we define them in order to disable password validations:
+      included do
+        # Models using the :database_authenticatable strategy will already
+        # have #password defined and models using the :validatable strategy
+        # will already have #password_required? defined - we will defer
+        # to those methods if they already exist so that people can use
+        # both strategies together. Otherwise, for :magic_link_authenticatable-
+        # only users, we define them in order to disable password validations:
 
-      unless instance_methods.include?(:password_required?)
-        def password_required?
-          false
+        unless instance_methods.include?(:password_required?)
+          def password_required?
+            false
+          end
         end
-      end
 
-      unless instance_methods.include?(:password)
-        # Not having a #password method breaks the :validatable module
-        #
-        # NOTE I proposed a change to Devise to fix this:
-        # https://github.com/heartcombo/devise/issues/5346#issuecomment-822022834
-        # As of yet it hasn't been accepted due to unknowns of the legacy code's purpose
-        def password
-          nil
+        unless instance_methods.include?(:password)
+          # Not having a #password method breaks the :validatable module
+          #
+          # NOTE I proposed a change to Devise to fix this:
+          # https://github.com/heartcombo/devise/issues/5346#issuecomment-822022834
+          # As of yet it hasn't been accepted due to unknowns of the legacy code's purpose
+          def password
+            nil
+          end
         end
       end
 

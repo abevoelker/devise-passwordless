@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -xeuo pipefail
+
+DIRECTORY=spec/tmp/dummy_app-rails-$1
+
+mkdir -p $DIRECTORY
+cp spec/dummy_app_config/gemfiles/Gemfile-rails-$1 $DIRECTORY/Gemfile
+cd $DIRECTORY
+bundle config set --local path gems
+bundle install
+bundle exec rails new dummy_app --database=sqlite3 --skip-active-storage --skip-action-cable --skip-spring --skip-listen --skip-test
+cat ../../dummy_app_config/Gemfile.append >> dummy_app/Gemfile
+cd dummy_app
+bundle install
+bundle exec rails generate rspec:install
+cp -rf ../../../dummy_app_config/shared_source/all/* ./
+cp -rf ../../../dummy_app_config/shared_source/$1/* ./
+yarn install

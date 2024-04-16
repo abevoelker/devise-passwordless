@@ -590,6 +590,16 @@ Other Ruby libraries that offer passwordless authentication:
 * [passwordless](https://github.com/mikker/passwordless)
 * [magic-link](https://github.com/dvanderbeek/magic-link)
 
+## Gem development
+
+### Running tests
+
+```
+bin/dummy-app-setup 6.1
+cd spec/tmp/dummy_app-rails-6.1/dummy_app
+bundle exec rails db:drop db:create db:migrate spec
+```
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

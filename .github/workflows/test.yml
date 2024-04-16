@@ -53,22 +53,8 @@ jobs:
           bundle
           bundle exec rake
       - name: Set up new Rails dummy app
-        working-directory: ./spec
-        env:
-          RAILS_NEW_GEMFILE: dummy_app_config/gemfiles/Gemfile-rails-${{ matrix.rails-version }}
         run: |
-          bundle config set --local path '/tmp/system-tests'
-          BUNDLE_GEMFILE=$RAILS_NEW_GEMFILE bundle
-          rails new dummy_app --database=sqlite3 --skip-active-storage --skip-action-cable --skip-spring --skip-listen --skip-test
-          cat dummy_app_config/Gemfile.append >> dummy_app/Gemfile
-          cd dummy_app
-          bundle
-          rails g rspec:install
-          cp -rf ../dummy_app_config/shared_source/all/* ./
-          cp -rf ../dummy_app_config/shared_source/${{ matrix.rails-version }}/* ./
-          yarn install
+          bin/dummy-app-setup ${{ matrix.rails-version }}
       - name: Run Rails dummy app tests
-        working-directory: ./spec/dummy_app
         run: |
-          rake db:drop db:create db:migrate
-          rake
+          bundle exec rails db:drop db:create db:migrate spec

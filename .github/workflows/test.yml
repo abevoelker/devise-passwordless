@@ -45,8 +45,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
-      - name: Install Yarn
-        run: npm install -g yarn
       - name: Run gem tests
         run: |
           bundle config set --local path '/tmp/gem-tests'

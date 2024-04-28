@@ -590,9 +590,38 @@ Other Ruby libraries that offer passwordless authentication:
 * [passwordless](https://github.com/mikker/passwordless)
 * [magic-link](https://github.com/dvanderbeek/magic-link)
 
+## Gem development
+
+### Running tests
+
+To run the set of basic gem tests, do:
+
+```
+$ bundle
+$ bundle exec rake
+```
+
+The more important and more thorough tests utilize a "dummy" Rails application.
+
+To run this full suite of dummy app tests across all supported versions of Ruby and Rails,
+you can use [nektos/act][] to run the same tests that run in our GitHub Workflow CI:
+
+```
+$ act -W .github/workflows/test.yml -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest --no-cache-server
+```
+
+To run only against specific versions of Ruby or Rails, you can use the `--matrix` flag of `act`:
+
+```
+$ act -W .github/workflows/test.yml -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-latest --no-cache-server --matrix ruby-version:3.2 --matrix rails-version:7 --matrix rails-version:6.1
+```
+
+The above example will only run the tests for Rails 7 and Rails 6.1 using Ruby 3.2.
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
 [Devise]: https://github.com/heartcombo/devise
 [devise-i18n]: https://github.com/heartcombo/devise#i18n
+[nektos/act]: https://github.com/nektos/act

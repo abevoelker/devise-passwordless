@@ -42,14 +42,13 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
+          rubygems: latest
       - uses: actions/setup-node@v4
         with:
           node-version: 18
-      - name: Install Yarn
-        run: npm install -g yarn
       - name: Run gem tests
         run: |
-          bundle config set --local path '/tmp/gem-tests'
+          bundle config set --local path .`mktemp -u -d`
           bundle
           bundle exec rake
       - name: Set up new Rails dummy app
@@ -57,7 +56,7 @@ jobs:
         env:
           RAILS_NEW_GEMFILE: dummy_app_config/gemfiles/Gemfile-rails-${{ matrix.rails-version }}
         run: |
-          bundle config set --local path '/tmp/system-tests'
+          bundle config set --local path .`mktemp -u -d`
           BUNDLE_GEMFILE=$RAILS_NEW_GEMFILE bundle
           rails new dummy_app --database=sqlite3 --skip-active-storage --skip-action-cable --skip-spring --skip-listen --skip-test
 

@@ -332,6 +332,52 @@ end
 config.passwordless_tokenizer = "::LuckyUserTokenizer"
 ```
 
+#### Single-use tokenizer
+
+With Rails 7.1 and [generates_token_for](https://api.rubyonrails.org/classes/ActiveRecord/TokenFor/ClassMethods.html#method-i-generates_token_for) you can create a single-use tokenizer. For example:
+
+```ruby
+class SingleUseTokenizer
+  def self.decode(token, resource_class, *args)
+    resource = resource_class.find_by_token_for(:passwordless_login, token)
+    raise Devise::Passwordless::ExpiredTokenError unless resource
+    raise Devise::Passwordless::InvalidTokenError unless resource.is_a?(resource_class)
+    [resource, {}]
+  end
+
+  def self.encode(resource, *args)
+    resource.generate_token_for(:passwordless_login)
+  end
+end
+```
+
+Then in your `User` model:
+
+```ruby
+  generates_token_for :passwordless_login, expires_in: passwordless_login_within do
+    current_sign_in_at
+  end
+```
+
+It relies on the `current_sign_in_at` attribute changing on a user after a successful login.
+Once it changes, the same token will always be invalid and cannot be reused.
+
+Since the same link cannot be visited twice, you may need to ignore `HEAD` requests
+to avoid some email clients (ex: Outlook) visiting links with a `HEAD` request before
+the `GET` request with something like:
+
+```ruby
+module Users
+  class PasswordlessMagicLinksController < Devise::MagicLinksController
+    def show
+      return render(plain: '') if request.method == 'HEAD'
+
+      super
+    end
+  end
+end
+```
+
 ## Multiple user (resource) types
 
 Devise supports multiple resource types, so we do too.

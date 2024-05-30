@@ -11,6 +11,12 @@ A passwordless login strategy for [Devise] using emailed magic links
 * [Supports multiple user (resource) types](#multiple-user-resource-types)
 * All the goodness of Devise!
 
+## Call for maintainers 🗣️📣
+
+We're currently looking for volunteers to help maintain this library! [See here for details][call-for-maintainers].
+
+[call-for-maintainers]: https://github.com/abevoelker/devise-passwordless/discussions/64
+
 ## 0.x to 1.0 Upgrade
 
 ⭐ The 1.0 release includes significant breaking changes! ⭐

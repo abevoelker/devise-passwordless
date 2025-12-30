@@ -328,6 +328,7 @@ Devise.setup do |config|
   # is nil, which means defer to Devise's `secret_key` config value. Changing this
   # key will render invalid all existing passwordless login tokens. You can
   # generate your own secret value with e.g. `rake secret`
+  # Can also be a proc/lambda for dynamic resolution at runtime.
   # config.passwordless_secret_key = nil
 
   # When using the :trackable module and MessageEncryptorTokenizer, set to true to

@@ -19,12 +19,11 @@ module Devise
       @deprecator ||= ActiveSupport::Deprecation.new("1.1", "Devise-Passwordless")
     end
 
+    # Supports callable values (procs/lambdas) for dynamic resolution at runtime,
     def self.secret_key
-      if Devise.passwordless_secret_key.present?
-        Devise.passwordless_secret_key
-      else
-        Devise.secret_key
-      end
+      key = Devise.passwordless_secret_key
+      resolved = key.respond_to?(:call) ? key.call : key
+      resolved.presence || Devise.secret_key
     end
 
     FILTER_PARAMS_WARNING = "[DEVISE-PASSWORDLESS] We have detected that your Rails configuration does not " \

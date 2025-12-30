@@ -4,4 +4,4 @@
 
 <p><%= link_to "Log in to my account", magic_link_url(@resource, @scope_name => {email: @resource.email, token: @token, remember_me: @remember_me}) %></p>
 
-<p>Note that the link will expire in <%= Devise.passwordless_login_within.inspect %>.</p>          
+<p>Note that the link will expire in <%= Devise.passwordless_login_within.inspect %>.</p>

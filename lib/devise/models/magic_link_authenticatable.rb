@@ -12,13 +12,13 @@ module Devise
       # both strategies together. Otherwise, for :magic_link_authenticatable-
       # only users, we define them in order to disable password validations:
 
-      unless instance_methods.include?(:password_required?)
+      unless method_defined?(:password_required?)
         def password_required?
           false
         end
       end
 
-      unless instance_methods.include?(:password)
+      unless method_defined?(:password)
         # Not having a #password method breaks the :validatable module
         #
         # NOTE I proposed a change to Devise to fix this:
